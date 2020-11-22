@@ -3,6 +3,8 @@ import {createMenuTemplate} from './view/menu';
 import {createFiltersTemplate} from './view/filters';
 import {createSortingTemplate} from './view/sorting';
 import {createListTemplate} from './view/list';
+import {createListItemTemplate} from './view/list-item';
+import {createFormTemlate} from './view/form-creation';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -24,3 +26,9 @@ const tripEvents = siteBodyElement.querySelector(`.trip-events`);
 render(tripEvents.children[0], createSortingTemplate(), `afterend`);
 
 render(tripEvents, createListTemplate(), `beforeend`);
+
+const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
+
+render(tripEventsList, createListItemTemplate(), `afterbegin`);
+
+render(tripEventsList.children[0], createFormTemlate(), `afterbegin`);
