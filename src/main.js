@@ -4,7 +4,10 @@ import {createFiltersTemplate} from './view/filters';
 import {createSortingTemplate} from './view/sorting';
 import {createListTemplate} from './view/list';
 import {createListItemTemplate} from './view/list-item';
-import {createFormTemlate} from './view/form-creation';
+import {createFormTemplate} from './view/form-creation';
+import {createPointTemplate} from './view/point';
+
+const TASK_COUNT = 3;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -31,4 +34,9 @@ const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
 
 render(tripEventsList, createListItemTemplate(), `afterbegin`);
 
-render(tripEventsList.children[0], createFormTemlate(), `afterbegin`);
+let isEditeble = true;
+render(tripEventsList.children[0], createFormTemplate(isEditeble), `afterbegin`);
+
+for (let i = 0; i < TASK_COUNT; i++) {
+  render(tripEventsList, createPointTemplate(), `beforeend`);
+}
