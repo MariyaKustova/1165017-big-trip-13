@@ -6,8 +6,12 @@ import {createListTemplate} from './view/list';
 import {createListItemTemplate} from './view/list-item';
 import {createFormTemplate} from './view/form-creation';
 import {createPointTemplate} from './view/point';
+import {generateWaypoint} from './mock/waypoint';
 
-const TASK_COUNT = 3;
+const TASK_COUNT = 20;
+
+export const waypoints = new Array(TASK_COUNT).fill().map(generateWaypoint);
+console.log(waypoints);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -38,5 +42,6 @@ let isEditeble = true;
 render(tripEventsList.children[0], createFormTemplate(isEditeble), `afterbegin`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
-  render(tripEventsList, createPointTemplate(), `beforeend`);
+  render(tripEventsList, createPointTemplate(waypoints[i]), `beforeend`);
 }
+
