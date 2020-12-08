@@ -1,20 +1,20 @@
+import flatpickr from 'flatpickr';
 import {generateOffers} from './way-point/offers';
-import dayjs from 'dayjs';
 
 export const createPointTemplate = (waypoint) => {
-  const {type, to, price, options, isFavorite} = waypoint;
+  const {day, type, to, price, startTime, endTime, options, isFavorite} = waypoint;
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="${flatpickr.parseDate(day, `Y-m-d`)}">${flatpickr.parseDate(day, `j M`)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${to}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T12:25">16:20</time>
+        <time class="event__start-time" datetime="${flatpickr.parseDate(startTime, `Y-m-d H:i`)}">${flatpickr.parseDate(startTime, `H:i`)}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T13:35">17:00</time>
+        <time class="event__end-time" datetime="${flatpickr.parseDate(endTime, `Y-m-d H:i`)}">${flatpickr.parseDate(startTime, `H:i`)}</time>
       </p>
       <p class="event__duration">40M</p>
     </div>

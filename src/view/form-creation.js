@@ -1,8 +1,8 @@
 import {renderTypeInputs} from './way-point/type-group';
-import {renderOfferCheckboxes} from './way-point/available-offers';
+import {renderOfferCheckboxes} from './way-point/avialable-offers';
 import {renderPhotos} from './photos';
 
-export const createFormTemplate = (isEditeble) => {
+export const createFormTemplate = (isEditeble, waypoint) => {
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">

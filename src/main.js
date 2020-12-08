@@ -11,7 +11,6 @@ import {generateWaypoint} from './mock/waypoint';
 const TASK_COUNT = 20;
 
 export const waypoints = new Array(TASK_COUNT).fill().map(generateWaypoint);
-console.log(waypoints);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -39,7 +38,7 @@ const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
 render(tripEventsList, createListItemTemplate(), `afterbegin`);
 
 let isEditeble = true;
-render(tripEventsList.children[0], createFormTemplate(isEditeble), `afterbegin`);
+render(tripEventsList.children[0], createFormTemplate(isEditeble, waypoints), `afterbegin`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
   render(tripEventsList, createPointTemplate(waypoints[i]), `beforeend`);
