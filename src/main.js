@@ -37,8 +37,8 @@ const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
 
 render(tripEventsList, createListItemTemplate(), `afterbegin`);
 
-let isEditeble = true;
-render(tripEventsList.children[0], createFormTemplate(isEditeble, waypoints), `afterbegin`);
+let isEditeble = false;
+render(tripEventsList.children[0], createFormTemplate(isEditeble, waypoints[0]), `afterbegin`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
   render(tripEventsList, createPointTemplate(waypoints[i]), `beforeend`);

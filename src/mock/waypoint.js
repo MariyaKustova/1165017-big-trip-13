@@ -124,7 +124,7 @@ const generateIsFavorite = () => {
 export const generateWaypoint = () => {
   const type = generateEvent(typeWaypoints);
   return {
-    day: `2019-03-18`,
+    day: `MAR 18`,
     type,
     to: generateEvent(destinations),
     startTime: `19/03/19 00:00`,
@@ -134,7 +134,7 @@ export const generateWaypoint = () => {
       return Object.assign({id: index + 1}, item);
     }),
     description: generateDescription(),
-    photo: generatePhotos(),
+    photos: generatePhotos(),
     isFavorite: generateIsFavorite()
   };
 };
