@@ -19,7 +19,7 @@ const render = (container, template, place) => {
 const siteBodyElement = document.querySelector(`.page-body`);
 const tripMain = siteBodyElement.querySelector(`.trip-main`);
 
-render(tripMain, createTripInfoTemplate(), `afterbegin`);
+render(tripMain, createTripInfoTemplate(waypoints), `afterbegin`);
 
 const controls = tripMain.querySelector(`.trip-controls`);
 
