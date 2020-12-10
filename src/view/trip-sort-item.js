@@ -24,9 +24,10 @@ const typesSort = [
 export const generateSorting = () => {
   let result = ``;
   for (const element of typesSort) {
-    result += `<div class="trip-sort__item  trip-sort__item--${element.value}">
-    <input id="sort-${element.value}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" element.value="sort-${element.value}">
-    <label class="trip-sort__btn" for="sort-${element.value}">${element.text}</label>
+    const {value, text} = element;
+    result += `<div class="trip-sort__item  trip-sort__item--${value}">
+    <input id="sort-${value}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${value}">
+    <label class="trip-sort__btn" for="sort-${value}">${text}</label>
   </div>`;
   }
   return result;

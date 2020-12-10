@@ -1,5 +1,5 @@
-import {renderTypeInputs} from './way-point/type-group';
-import {renderOfferCheckboxes} from './way-point/avialable-offers';
+import {renderTypeInputs} from './type-group';
+import {renderOfferCheckboxes} from './avialable-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
 

@@ -1,3 +1,1 @@
-export const createListItemTemplate = () => {
-  return `<li class="trip-events__item"></li>`;
-};
+export const createListItemTemplate = () => `<li class="trip-events__item"></li>`;

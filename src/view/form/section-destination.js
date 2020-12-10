@@ -1,13 +1,13 @@
-import {renderPhotos} from './photos';
+import {createPhotos} from './photos';
 import {renderDescription} from './description';
 
-export const renderSectionDestination = (isEditeble, arr1, arr2) => {
-  if (arr1 || arr2) {
+export const renderSectionDestination = (isEditeble, description, photos) => {
+  if (description || photos) {
     return `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    ${renderDescription(arr1)}
+    ${renderDescription(description)}
 
-    ${renderPhotos(isEditeble, arr2)}
+    ${createPhotos(isEditeble, photos)}
   </section>`;
   }
   return ``;

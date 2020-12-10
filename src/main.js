@@ -4,8 +4,8 @@ import {createFiltersTemplate} from './view/filters';
 import {createSortingTemplate} from './view/sorting';
 import {createListTemplate} from './view/list';
 import {createListItemTemplate} from './view/list-item';
-import {createFormTemplate} from './view/form-creation';
-import {createPointTemplate} from './view/point';
+import {createFormTemplate} from './view/form/form-creation';
+import {createPointTemplate} from './view/way-point/point';
 import {generateWaypoint} from './mock/waypoint';
 
 const TASK_COUNT = 20;

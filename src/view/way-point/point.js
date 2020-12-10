@@ -1,4 +1,4 @@
-import {generateOffers} from './way-point/offers';
+import {generateOffers} from './offers';
 
 export const createPointTemplate = (waypoint) => {
   const {day, type, to, price, startTime, endTime, options, isFavorite} = waypoint;
