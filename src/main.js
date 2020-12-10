@@ -6,8 +6,11 @@ import {createListTemplate} from './view/list';
 import {createListItemTemplate} from './view/list-item';
 import {createFormTemplate} from './view/form-creation';
 import {createPointTemplate} from './view/point';
+import {generateWaypoint} from './mock/waypoint';
 
-const TASK_COUNT = 3;
+const TASK_COUNT = 20;
+
+export const waypoints = new Array(TASK_COUNT).fill().map(generateWaypoint);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -16,7 +19,7 @@ const render = (container, template, place) => {
 const siteBodyElement = document.querySelector(`.page-body`);
 const tripMain = siteBodyElement.querySelector(`.trip-main`);
 
-render(tripMain, createTripInfoTemplate(), `afterbegin`);
+render(tripMain, createTripInfoTemplate(waypoints), `afterbegin`);
 
 const controls = tripMain.querySelector(`.trip-controls`);
 
@@ -34,9 +37,10 @@ const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
 
 render(tripEventsList, createListItemTemplate(), `afterbegin`);
 
-let isEditeble = true;
-render(tripEventsList.children[0], createFormTemplate(isEditeble), `afterbegin`);
+let isEditeble = false;
+render(tripEventsList.children[0], createFormTemplate(isEditeble, waypoints[0]), `afterbegin`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
-  render(tripEventsList, createPointTemplate(), `beforeend`);
+  render(tripEventsList, createPointTemplate(waypoints[i]), `beforeend`);
 }
+
