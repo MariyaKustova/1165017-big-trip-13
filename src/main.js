@@ -1,6 +1,6 @@
-import {renderTemplate} from './utils';
+import {renderTemplate, renderElement, RenderPosition} from './utils';
 import {createTripInfoTemplate} from './view/trip-info';
-import {createMenuTemplate} from './view/menu';
+import MenuView from './view/menu';
 import {createFiltersTemplate} from './view/filters';
 import {createSortingTemplate} from './view/sorting';
 import {createListTemplate} from './view/list';
@@ -20,7 +20,7 @@ renderTemplate(tripMain, createTripInfoTemplate(waypoints), `afterbegin`);
 
 const controls = tripMain.querySelector(`.trip-controls`);
 
-renderTemplate(controls.children[0], createMenuTemplate(), `afterend`);
+renderElement(controls.children[0], new MenuView().getTemplate(), RenderPosition.AFTEREND);
 
 renderTemplate(controls, createFiltersTemplate(), `beforeend`);
 
