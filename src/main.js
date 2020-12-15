@@ -1,10 +1,10 @@
 import {renderTemplate, renderElement, RenderPosition} from './utils';
 import {createTripInfoTemplate} from './view/trip-info';
 import MenuView from './view/menu';
-import {createFiltersTemplate} from './view/filters';
-import {createSortingTemplate} from './view/sorting';
-import {createListTemplate} from './view/list';
-import {createListItemTemplate} from './view/list-item';
+import FiltersView from './view/filters';
+import SortingView from './view/sorting';
+import ListView from './view/list';
+import ListItemView from './view/list-item';
 import {createFormTemplate} from './view/form/form-creation';
 import {createPointTemplate} from './view/way-point/point';
 import {generateWaypoint} from './mock/waypoint';
@@ -22,22 +22,22 @@ const controls = tripMain.querySelector(`.trip-controls`);
 
 renderElement(controls.children[0], new MenuView().getTemplate(), RenderPosition.AFTEREND);
 
-renderTemplate(controls, createFiltersTemplate(), `beforeend`);
+renderElement(controls, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);
 
-renderTemplate(tripEvents.children[0], createSortingTemplate(), `afterend`);
+renderElement(tripEvents.children[0], new SortingView().getTemplate(), RenderPosition.AFTEREND);
 
-renderTemplate(tripEvents, createListTemplate(), `beforeend`);
+const listComponent = new ListView();
+renderElement(tripEvents, listComponent.getElement(), RenderPosition.BEFOREEND);
 
-const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
-
-renderTemplate(tripEventsList, createListItemTemplate(), `afterbegin`);
+const listItemComponent = new ListItemView();
+renderElement(listComponent.getElement(), listItemComponent.getElement(), RenderPosition.AFTERBEGIN);
 
 let isEditeble = false;
-renderTemplate(tripEventsList.children[0], createFormTemplate(isEditeble, waypoints[0]), `afterbegin`);
+renderTemplate(listItemComponent.getElement(), createFormTemplate(isEditeble, waypoints[0]), `afterbegin`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
-  renderTemplate(tripEventsList, createPointTemplate(waypoints[i]), `beforeend`);
+  renderTemplate(listComponent.getElement(), createPointTemplate(waypoints[i]), `beforeend`);
 }
 
