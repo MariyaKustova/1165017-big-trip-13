@@ -2,10 +2,12 @@ import {renderTypeInputs} from './type-group';
 import {renderOfferCheckboxes} from './avialable-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
+import {createElement} from '../../utils';
 
-export const createFormTemplate = (isEditeble, waypoint) => {
+const createFormTemplate = (isEditeble, waypoint) => {
   const {type, to, price, startTime, endTime, options, description, photos} = waypoint;
-  return `<form class="event event--edit" action="#" method="post">
+  return `<li class="trip-events__item">
+  <form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -50,6 +52,9 @@ export const createFormTemplate = (isEditeble, waypoint) => {
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
     <button class="event__reset-btn" type="reset">${isEditeble ? `Cancel` : `Delete`}</button>
+    ${isEditeble ? `` : `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`}
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -62,5 +67,30 @@ export const createFormTemplate = (isEditeble, waypoint) => {
 
     ${renderSectionDestination(isEditeble, description, photos)}
   </section>
-</form>`;
+</form>
+</li>`;
 };
+
+export default class FormEditView {
+  constructor(isEditeble, waypoint) {
+    this._isEditeble = isEditeble;
+    this._waypoint = waypoint;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFormTemplate(this._isEditeble, this._waypoint);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

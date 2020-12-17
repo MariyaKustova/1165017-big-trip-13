@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils';
+import {getRandomInteger, dateParser} from '../utils';
 
 const COUNT = 5;
 

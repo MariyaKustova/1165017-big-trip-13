@@ -1,14 +1,14 @@
 import {createElement} from '../utils';
 
-const createListItemTemplate = () => `<li class="trip-events__item"></li>`;
+const createNoPoints = () => `<p class="trip-events__msg">Click New Event to create your first point</p>`;
 
-export default class ListItemView {
+export default class NoPointsView {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createListItemTemplate();
+    return createNoPoints();
   }
 
   getElement() {
