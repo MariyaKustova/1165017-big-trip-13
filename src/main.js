@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils';
+import {render, RenderPosition, replace, remove} from './utils/render';
 import TripInfoView from './view/trip-info';
 import MenuView from './view/menu';
 import FiltersView from './view/filters';
@@ -17,24 +17,24 @@ const siteBodyElement = document.querySelector(`.page-body`);
 const tripMain = siteBodyElement.querySelector(`.trip-main`);
 
 const renderHeader = (headerContainer) => {
-  render(headerContainer, new TripInfoView(waypoints).getElement(), RenderPosition.AFTERBEGIN);
+  render(headerContainer, new TripInfoView(waypoints), RenderPosition.AFTERBEGIN);
 
-  render(headerContainer.children[1].children[0], new MenuView().getTemplate(), RenderPosition.AFTEREND);
+  render(headerContainer.children[1].children[0], new MenuView(), RenderPosition.AFTEREND);
 
-  render(headerContainer.children[1], new FiltersView().getElement(), RenderPosition.BEFOREEND);
+  render(headerContainer.children[1], new FiltersView(), RenderPosition.BEFOREEND);
 };
 
 const renderPoint = (listComponent, waypoint) => {
-  const pointView = new PointView(waypoint);
+  const pointComponent = new PointView(waypoint);
   let isEditeble = false;
   const formEditComponent = new FormEditView(isEditeble, waypoint);
 
   const replacePointToForm = () => {
-    listComponent.getElement().replaceChild(formEditComponent.getElement(), pointView.getElement());
+    replace(formEditComponent, pointComponent);
   };
 
   const replaceFormToPoint = () => {
-    listComponent.getElement().replaceChild(pointView.getElement(), formEditComponent.getElement());
+    replace(pointComponent, formEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -45,7 +45,7 @@ const renderPoint = (listComponent, waypoint) => {
     }
   };
 
-  pointView.setClickHandler(() => {
+  pointComponent.setClickHandler(() => {
     replacePointToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
@@ -56,7 +56,7 @@ const renderPoint = (listComponent, waypoint) => {
   });
 
   formEditComponent.setRemoveClickHandler(() => {
-    formEditComponent.getElement().remove();
+    remove(formEditComponent);
   });
 
   formEditComponent.setEditClickHandler(() => {
@@ -64,18 +64,18 @@ const renderPoint = (listComponent, waypoint) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(listComponent.getElement(), pointView.getElement(), RenderPosition.BEFOREEND);
+  render(listComponent, pointComponent, RenderPosition.BEFOREEND);
 };
 
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);
 
 const renderTravel = (travelContainer, travelPoints) => {
   if (travelPoints.length === 0) {
-    render(travelContainer, new NoPointsView().getElement(), RenderPosition.BEFOREEND);
+    render(travelContainer, new NoPointsView(), RenderPosition.BEFOREEND);
   } else {
-    render(travelContainer.children[0], new SortingView().getTemplate(), RenderPosition.AFTEREND);
+    render(travelContainer.children[0], new SortingView(), RenderPosition.AFTEREND);
     const listComponent = new ListView();
-    render(travelContainer, listComponent.getElement(), RenderPosition.BEFOREEND);
+    render(travelContainer, listComponent, RenderPosition.BEFOREEND);
 
     for (const waypoint of travelPoints) {
       renderPoint(listComponent, waypoint);
