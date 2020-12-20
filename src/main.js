@@ -4,7 +4,7 @@ import MenuView from './view/menu';
 import FiltersView from './view/filters';
 import SortingView from './view/sorting';
 import ListView from './view/list';
-import FormEditView from './view/form/form-creation';
+import FormEditView from './view/form/form-edit';
 import PointView from './view/way-point/point';
 import NoPointsView from './view/no-points';
 import {generateWaypoint} from './mock/waypoint';
@@ -27,14 +27,14 @@ const renderHeader = (headerContainer) => {
 const renderPoint = (listComponent, waypoint) => {
   const pointView = new PointView(waypoint);
   let isEditeble = false;
-  const formEditView = new FormEditView(isEditeble, waypoint);
+  const formEditComponent = new FormEditView(isEditeble, waypoint);
 
   const replacePointToForm = () => {
-    listComponent.getElement().replaceChild(formEditView.getElement(), pointView.getElement());
+    listComponent.getElement().replaceChild(formEditComponent.getElement(), pointView.getElement());
   };
 
   const replaceFormToPoint = () => {
-    listComponent.getElement().replaceChild(pointView.getElement(), formEditView.getElement());
+    listComponent.getElement().replaceChild(pointView.getElement(), formEditComponent.getElement());
   };
 
   const onEscKeyDown = (evt) => {
@@ -45,22 +45,21 @@ const renderPoint = (listComponent, waypoint) => {
     }
   };
 
-  pointView.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  pointView.setClickHandler(() => {
     replacePointToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  formEditView.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
+  formEditComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  formEditView.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, () => {
-    formEditView.getElement().remove();
+  formEditComponent.setRemoveClickHandler(() => {
+    formEditComponent.getElement().remove();
   });
 
-  formEditView.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  formEditComponent.setEditClickHandler(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });

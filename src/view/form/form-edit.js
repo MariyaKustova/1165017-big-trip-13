@@ -2,7 +2,7 @@ import {renderTypeInputs} from './type-group';
 import {renderOfferCheckboxes} from './avialable-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
-import Abstract from './abstract';
+import Abstract from '../abstract';
 
 const createFormTemplate = (isEditeble, waypoint) => {
   const {type, to, price, startTime, endTime, options, description, photos} = waypoint;
@@ -76,9 +76,37 @@ export default class FormEditView extends Abstract {
     super();
     this._isEditeble = isEditeble;
     this._waypoint = waypoint;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createFormTemplate(this._isEditeble, this._waypoint);
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  setRemoveClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
