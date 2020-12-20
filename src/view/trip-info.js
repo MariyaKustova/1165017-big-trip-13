@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createTripCost = (waypoints) => {
   const result = waypoints.reduce((accumulator, point) => {
@@ -19,25 +19,13 @@ const createTripInfoTemplate = (waypoints) => {
 </section>`;
 };
 
-export default class TripInfoView {
+export default class TripInfoView extends Abstract {
   constructor(waypoints) {
+    super();
     this._waypoints = waypoints;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._waypoints);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

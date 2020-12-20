@@ -2,7 +2,7 @@ import {renderTypeInputs} from './type-group';
 import {renderOfferCheckboxes} from './avialable-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
-import {createElement} from '../../utils';
+import Abstract from './abstract';
 
 const createFormTemplate = (isEditeble, waypoint) => {
   const {type, to, price, startTime, endTime, options, description, photos} = waypoint;
@@ -71,26 +71,14 @@ const createFormTemplate = (isEditeble, waypoint) => {
 </li>`;
 };
 
-export default class FormEditView {
+export default class FormEditView extends Abstract {
   constructor(isEditeble, waypoint) {
+    super();
     this._isEditeble = isEditeble;
     this._waypoint = waypoint;
-    this._element = null;
   }
 
   getTemplate() {
     return createFormTemplate(this._isEditeble, this._waypoint);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
