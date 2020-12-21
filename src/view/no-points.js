@@ -1,19 +1,14 @@
 import {createElement} from '../utils';
 
-const createMenuTemplate = () => {
-  return `<nav class="trip-controls__trip-tabs  trip-tabs">
-  <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
-  <a class="trip-tabs__btn" href="#">Stats</a>
-</nav>`;
-};
+const createNoPoints = () => `<p class="trip-events__msg">Click New Event to create your first point</p>`;
 
-export default class MenuView {
+export default class NoPointsView {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createMenuTemplate();
+    return createNoPoints();
   }
 
   getElement() {

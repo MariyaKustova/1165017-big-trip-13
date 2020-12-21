@@ -1,6 +1,22 @@
-import {generateOffers} from './way-point/offers';
+import {createElement} from '../../utils';
 
-export const createPointTemplate = (waypoint) => {
+const renderListItemOffer = ({title, price}) => {
+  return `<li class="event__offer">
+<span class="event__offer-title">${title}</span>
+&plus;&euro;&nbsp;
+<span class="event__offer-price">${price}</span>
+</li>`;
+};
+
+const generateOffers = (array) => {
+  let result = ``;
+  for (const element of array) {
+    result += renderListItemOffer(element);
+  }
+  return result;
+};
+
+const createPointTemplate = (waypoint) => {
   const {day, type, to, price, startTime, endTime, options, isFavorite} = waypoint;
   return `<li class="trip-events__item">
   <div class="event">
@@ -36,3 +52,26 @@ export const createPointTemplate = (waypoint) => {
   </div>
 </li>`;
 };
+
+export default class PointView {
+  constructor(waypoint) {
+    this._waypoint = waypoint;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointTemplate(this._waypoint);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
