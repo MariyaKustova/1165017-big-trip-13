@@ -1,4 +1,4 @@
-import {createElement} from '../../utils';
+import Abstract from '../abstract';
 
 const renderListItemOffer = ({title, price}) => {
   return `<li class="event__offer">
@@ -53,25 +53,25 @@ const createPointTemplate = (waypoint) => {
 </li>`;
 };
 
-export default class PointView {
+export default class PointView extends Abstract {
   constructor(waypoint) {
+    super();
     this._waypoint = waypoint;
-    this._element = null;
+
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._waypoint);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
