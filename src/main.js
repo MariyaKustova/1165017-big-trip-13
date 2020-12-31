@@ -1,13 +1,9 @@
-import {render, RenderPosition, replace, remove} from './utils/render';
+import {render, RenderPosition} from './utils/render';
 import TripInfoView from './view/trip-info';
 import MenuView from './view/menu';
 import FiltersView from './view/filters';
-import SortingView from './view/sorting';
-import ListView from './view/list';
-import FormEditView from './view/form/form-edit';
-import PointView from './view/way-point/point';
-import NoPointsView from './view/no-points';
 import {generateWaypoint} from './mock/waypoint';
+import Trip from './presenter/trip';
 
 const POINT_COUNT = 20;
 
@@ -24,64 +20,8 @@ const renderHeader = (headerContainer) => {
   render(headerContainer.children[1], new FiltersView(), RenderPosition.BEFOREEND);
 };
 
-const renderPoint = (listComponent, waypoint) => {
-  const pointComponent = new PointView(waypoint);
-  let isEditeble = false;
-  const formEditComponent = new FormEditView(isEditeble, waypoint);
-
-  const replacePointToForm = () => {
-    replace(formEditComponent, pointComponent);
-  };
-
-  const replaceFormToPoint = () => {
-    replace(pointComponent, formEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      evt.preventDefault();
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  pointComponent.setClickHandler(() => {
-    replacePointToForm();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  formEditComponent.setFormSubmitHandler(() => {
-    replaceFormToPoint();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  formEditComponent.setRemoveClickHandler(() => {
-    remove(formEditComponent);
-  });
-
-  formEditComponent.setEditClickHandler(() => {
-    replaceFormToPoint();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(listComponent, pointComponent, RenderPosition.BEFOREEND);
-};
-
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);
-
-const renderTrip = (tripContainer, tripPoints) => {
-  if (tripPoints.length === 0) {
-    render(tripContainer, new NoPointsView(), RenderPosition.BEFOREEND);
-  } else {
-    render(tripContainer.children[0], new SortingView(), RenderPosition.AFTEREND);
-    const listComponent = new ListView();
-    render(tripContainer, listComponent, RenderPosition.BEFOREEND);
-
-    for (const waypoint of tripPoints) {
-      renderPoint(listComponent, waypoint);
-    }
-  }
-};
+const trip = new Trip(tripEvents);
 
 renderHeader(tripMain);
-renderTrip(tripEvents, waypoints);
+trip.init(waypoints);
