@@ -69,19 +69,19 @@ const renderPoint = (listComponent, waypoint) => {
 
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);
 
-const renderTravel = (travelContainer, travelPoints) => {
-  if (travelPoints.length === 0) {
-    render(travelContainer, new NoPointsView(), RenderPosition.BEFOREEND);
+const renderTrip = (tripContainer, tripPoints) => {
+  if (tripPoints.length === 0) {
+    render(tripContainer, new NoPointsView(), RenderPosition.BEFOREEND);
   } else {
-    render(travelContainer.children[0], new SortingView(), RenderPosition.AFTEREND);
+    render(tripContainer.children[0], new SortingView(), RenderPosition.AFTEREND);
     const listComponent = new ListView();
-    render(travelContainer, listComponent, RenderPosition.BEFOREEND);
+    render(tripContainer, listComponent, RenderPosition.BEFOREEND);
 
-    for (const waypoint of travelPoints) {
+    for (const waypoint of tripPoints) {
       renderPoint(listComponent, waypoint);
     }
   }
 };
 
 renderHeader(tripMain);
-renderTravel(tripEvents, waypoints);
+renderTrip(tripEvents, waypoints);
