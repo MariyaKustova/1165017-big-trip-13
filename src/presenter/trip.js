@@ -1,9 +1,8 @@
-import {render, RenderPosition, replace, remove} from '../utils/render';
+import {render, RenderPosition} from '../utils/render';
 import NoPointsView from '../view/no-points';
 import SortingView from '../view/sorting';
 import ListView from '../view/list';
-import FormEditView from '../view/form/form-edit';
-import PointView from '../view/way-point/point';
+import Point from '../presenter/point';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -32,46 +31,8 @@ export default class Trip {
   }
 
   _renderPoint(waypoint) {
-    const pointComponent = new PointView(waypoint);
-    let isEditeble = false;
-    const formEditComponent = new FormEditView(isEditeble, waypoint);
-
-    const replacePointToForm = () => {
-      replace(formEditComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, formEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    pointComponent.setClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    formEditComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    formEditComponent.setRemoveClickHandler(() => {
-      remove(formEditComponent);
-    });
-
-    formEditComponent.setEditClickHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(this._listComponent, pointComponent, RenderPosition.BEFOREEND);
+    const pointPresenter = new Point(this._listComponent);
+    pointPresenter.init(waypoint);
   }
 
   _renderPoints() {
