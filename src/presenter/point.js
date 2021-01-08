@@ -3,8 +3,9 @@ import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
 
 export default class Point {
-  constructor(listComponent) {
+  constructor(listComponent, changeData) {
     this._listComponent = listComponent;
+    this._changeData = changeData;
 
     this._pointComponent = null;
     this._isEditeble = null;
@@ -14,6 +15,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleRemoveClick = this._handleRemoveClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(waypoint) {
@@ -27,6 +29,7 @@ export default class Point {
     this._formEditComponent = new FormEditView(this._isEditeble, this._waypoint);
 
     this._pointComponent.setClickHandler(this._handleClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._formEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._formEditComponent.setEditClickHandler(this._handleEditClick);
     this._formEditComponent.setRemoveClickHandler(this._handleRemoveClick);
@@ -74,7 +77,18 @@ export default class Point {
     this._replacePointToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._changeData(
+        Object.assign(
+            {},
+            this._waypoint,
+            {isFavorite: !this._waypoint.isFavorite}
+        )
+    );
+  }
+
+  _handleFormSubmit(waypoint) {
+    this._changeData(waypoint);
     this._replaceFormToPoint();
   }
 
