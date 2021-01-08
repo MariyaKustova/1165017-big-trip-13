@@ -3,6 +3,7 @@ import NoPointsView from '../view/no-points';
 import SortingView from '../view/sorting';
 import ListView from '../view/list';
 import Point from '../presenter/point';
+import {updateItem} from '../utils/common';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -12,11 +13,18 @@ export default class Trip {
     this._noPointsView = new NoPointsView();
     this._sortingView = new SortingView();
     this._listComponent = new ListView();
+
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(waypoints) {
-    this._waypoints = waypoints;
+    this._waypoints = waypoints.slice();
     this._renderTrip();
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._waypoints = updateItem(this._waypoints, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
   _renderNoPoints() {
