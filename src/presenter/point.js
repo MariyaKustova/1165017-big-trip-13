@@ -2,20 +2,26 @@ import {render, RenderPosition, replace, remove} from '../utils/render';
 import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`,
+};
+
 export default class Point {
-  constructor(listComponent, changeData) {
+  constructor(listComponent, changeData, changeMode) {
     this._listComponent = listComponent;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._pointComponent = null;
     this._isEditeble = null;
     this._formEditComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleClick = this._handleClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleRemoveClick = this._handleRemoveClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(waypoint) {
@@ -39,11 +45,11 @@ export default class Point {
       return;
     }
 
-    if (this._listComponent.getElement().contains(prevPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._listComponent.getElement().contains(prevFormEditComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._formEditComponent, prevFormEditComponent);
     }
 
@@ -56,14 +62,23 @@ export default class Point {
     remove(this._formEditComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
   _replacePointToForm() {
     replace(this._formEditComponent, this._pointComponent);
     document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     replace(this._pointComponent, this._formEditComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
@@ -82,7 +97,9 @@ export default class Point {
         Object.assign(
             {},
             this._waypoint,
-            {isFavorite: !this._waypoint.isFavorite}
+            {
+              isFavorite: !this._waypoint.isFavorite
+            }
         )
     );
   }

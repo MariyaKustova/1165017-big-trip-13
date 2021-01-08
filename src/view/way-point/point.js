@@ -71,7 +71,7 @@ export default class PointView extends Abstract {
     this._callback.click();
   }
 
-  __favoriteClickHandler(evt) {
+  _favoriteClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
   }
