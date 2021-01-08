@@ -114,11 +114,14 @@ const generateIsFavorite = () => {
   return ``;
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 // Описывает точку маршрута
 
 export const generateWaypoint = () => {
   const type = generateEvent(typeWaypoints);
   return {
+    id: generateId(),
     day: `MAR 18`,
     type,
     to: generateEvent(destinations),

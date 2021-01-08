@@ -19,6 +19,9 @@ export default class Point {
   init(waypoint) {
     this._waypoint = waypoint;
 
+    const prevPointComponent = this._pointComponent;
+    const prevFormEditComponent = this._formEditComponent;
+
     this._pointComponent = new PointView(this._waypoint);
     this._isEditeble = false;
     this._formEditComponent = new FormEditView(this._isEditeble, this._waypoint);
@@ -28,7 +31,26 @@ export default class Point {
     this._formEditComponent.setEditClickHandler(this._handleEditClick);
     this._formEditComponent.setRemoveClickHandler(this._handleRemoveClick);
 
-    render(this._listComponent, this._pointComponent, RenderPosition.BEFOREEND);
+    if (prevPointComponent === null || prevFormEditComponent === null) {
+      render(this._listComponent, this._pointComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._listComponent.getElement().contains(prevPointComponent.getElement())) {
+      replace(this._pointComponent, prevPointComponent);
+    }
+
+    if (this._listComponent.getElement().contains(prevFormEditComponent.getElement())) {
+      replace(this._formEditComponent, prevFormEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevFormEditComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._formEditComponent);
   }
 
   _replacePointToForm() {
