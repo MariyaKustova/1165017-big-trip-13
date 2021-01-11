@@ -3,23 +3,27 @@ import NoPointsView from '../view/no-points';
 import SortingView from '../view/sorting';
 import ListView from '../view/list';
 import Point from '../presenter/point';
-import {updateItem} from '../utils/common';
+import {updateItem, sortPointDownDate, sortPointDownPrice} from '../utils/common';
+import {TypesSort} from '../utils/const';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
+    this._currentSortType = TypesSort.SORT_DEFAULT;
 
-    this._noPointsView = new NoPointsView();
+    this._noPointsComponent = new NoPointsView();
     this._sortingView = new SortingView();
     this._listComponent = new ListView();
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(waypoints) {
     this._waypoints = waypoints.slice();
+    this._sourceWaypoints = waypoints.slice();
     this._renderTrip();
   }
 
@@ -32,12 +36,37 @@ export default class Trip {
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
+  _sortPoint(typesSort) {
+    switch (typesSort) {
+      case TypesSort.SORT_TIME:
+        this._waypoints.sort(sortPointDownDate);
+        break;
+      case TypesSort.SORT_PRICE:
+        this._waypoints.sort(sortPointDownPrice);
+        break;
+      default:
+        this._waypoints = this._sourceWaypoints.slice;
+    }
+    this._currentSortType = TypesSort;
+  }
+
+  _handleSortTypeChange(typesSort) {
+    if (this._currentSortType === typesSort) {
+      return;
+    }
+
+    this._sortPoint(TypesSort);
+    this._clearTrip();
+    this._renderTrip();
+  }
+
   _renderNoPoints() {
-    render(this._tripContainer, new NoPointsView(), RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._noPointsComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSorting() {
-    render(this._tripContainer.children[0], new SortingView(), RenderPosition.AFTEREND);
+    render(this._tripContainer.children[0], this._sortingView, RenderPosition.AFTEREND);
+    this._sortingView.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderList() {
