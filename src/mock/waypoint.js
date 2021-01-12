@@ -1,4 +1,5 @@
 import {getRandomInteger} from '../utils/common';
+import dayjs from "dayjs";
 
 const COUNT = 5;
 
@@ -127,6 +128,7 @@ export const generateWaypoint = () => {
     to: generateEvent(destinations),
     startTime: `19/03/19 00:00`,
     endTime: `19/03/19 00:00`,
+    duration: dayjs(Object.endTime).diff(dayjs(Object.startTime)),
     price: getRandomInteger(1, 1000),
     options: generateOptions(type).map((item, index) => {
       return Object.assign({id: index + 1}, item);
