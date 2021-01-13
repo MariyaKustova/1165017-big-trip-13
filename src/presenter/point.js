@@ -19,6 +19,7 @@ export default class Point {
     this._mode = Mode.DEFAULT;
 
     this._handleClick = this._handleClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleRemoveClick = this._handleRemoveClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);

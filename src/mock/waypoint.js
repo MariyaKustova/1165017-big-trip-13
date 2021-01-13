@@ -108,13 +108,6 @@ const generatePhotos = () => {
   return photos;
 };
 
-const generateIsFavorite = () => {
-  if (getRandomInteger(0, 1)) {
-    return `--active`;
-  }
-  return ``;
-};
-
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 // Описывает точку маршрута
@@ -135,6 +128,6 @@ export const generateWaypoint = () => {
     }),
     description: generateDescription(),
     photos: generatePhotos(),
-    isFavorite: generateIsFavorite()
+    isFavorite: false,
   };
 };

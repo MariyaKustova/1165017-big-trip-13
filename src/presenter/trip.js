@@ -2,7 +2,7 @@ import {render, RenderPosition} from '../utils/render';
 import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
-import Point from '../presenter/point';
+import PointPresenter from '../presenter/point';
 import {updateItem, sortPointDownDate, sortPointDownPrice} from '../utils/common';
 import {SortType} from '../utils/const';
 
@@ -74,7 +74,7 @@ export default class Trip {
   }
 
   _renderPoint(waypoint) {
-    const pointPresenter = new Point(this._listComponent, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._listComponent, this._handlePointChange, this._handleModeChange);
     pointPresenter.init(waypoint);
     this._pointPresenter[waypoint.id] = pointPresenter;
   }
