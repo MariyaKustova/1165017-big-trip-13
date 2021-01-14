@@ -6,7 +6,12 @@ export const SortType = {
 
 export const ConvertTime = {
   MIL_IN_MINUTE: 60000,
-  MIL_IN_10_MINUTES: 60000 * 10,
   MIL_IN_HOUR: 60000 * 60,
   MIL_IN_DAY: 60000 * 60 * 24,
+};
+
+export const FilterType = {
+  DEFAULT: `Everything`,
+  FUTURE: `Future`,
+  PAST: `Past`,
 };

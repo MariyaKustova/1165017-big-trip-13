@@ -1,7 +1,7 @@
 import {render, RenderPosition} from './utils/render';
 import TripInfoView from './view/trip-info';
 import MenuView from './view/menu';
-import FiltersView from './view/filters';
+import Filters from './view/filters';
 import {generateWaypoint} from './mock/waypoint';
 import Trip from './presenter/trip';
 
@@ -17,7 +17,7 @@ const renderHeader = (headerContainer) => {
 
   render(headerContainer.children[1].children[0], new MenuView(), RenderPosition.AFTEREND);
 
-  render(headerContainer.children[1], new FiltersView(), RenderPosition.BEFOREEND);
+  render(headerContainer.children[1], new Filters(), RenderPosition.BEFOREEND);
 };
 
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);

@@ -17,7 +17,7 @@ const generateOffers = (array) => {
 };
 
 const createPointTemplate = (waypoint) => {
-  const {type, to, price, startTime, start, endTime, end, options, isFavorite, day, diffDate} = waypoint;
+  const {type, to, price, startTime, start, endTime, end, options, isFavorite, day, durationPoint} = waypoint;
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${startTime}">${day}</time>
@@ -31,7 +31,7 @@ const createPointTemplate = (waypoint) => {
         &mdash;
         <time class="event__end-time" datetime="${endTime}">${end}</time>
       </p>
-      <p class="event__duration">${diffDate}</p>
+      <p class="event__duration">${durationPoint}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>

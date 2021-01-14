@@ -153,26 +153,24 @@ export const generateWaypoint = () => {
     },
 
     get diffDate() {
-      const diff = ((this.endTime.getTime() - this.startTime.getTime()));
+      return ((this.endTime.getTime() - this.startTime.getTime()));
+    },
 
-      const convertsTime = (duration) => {
-        let minutes = Math.floor((duration / ConvertTime.MIL_IN_MINUTE) % 60);
-        let hours = Math.floor((duration / ConvertTime.MIL_IN_HOUR) % 24);
-        let days = Math.floor(duration / ConvertTime.MIL_IN_DAY);
+    get durationPoint() {
+      let minutes = Math.floor((this.diffDate / ConvertTime.MIL_IN_MINUTE) % 60);
+      let hours = Math.floor((this.diffDate / ConvertTime.MIL_IN_HOUR) % 24);
+      let days = Math.floor(this.diffDate / ConvertTime.MIL_IN_DAY);
 
-        days = (days < 10) ? `0` + days : days;
-        hours = (hours < 10) ? `0` + hours : hours;
-        minutes = (minutes < 10) ? `0` + minutes : minutes;
+      days = (days < 10) ? `0` + days : days;
+      hours = (hours < 10) ? `0` + hours : hours;
+      minutes = (minutes < 10) ? `0` + minutes : minutes;
 
-        if (days > 0) {
-          return days + `D` + ` ` + hours + `H` + ` ` + minutes + `M`;
-        } else if (hours > 0) {
-          return hours + `H` + ` ` + minutes + `M`;
-        }
-        return minutes + `M`;
-      };
-
-      return convertsTime(diff);
+      if (days > 0) {
+        return days + `D` + ` ` + hours + `H` + ` ` + minutes + `M`;
+      } else if (hours > 0) {
+        return hours + `H` + ` ` + minutes + `M`;
+      }
+      return minutes + `M`;
     }
   };
 };

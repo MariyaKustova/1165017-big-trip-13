@@ -4,13 +4,14 @@ import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
 import {updateItem, sortPointDownDate, sortPointDownPrice} from '../utils/common';
-import {SortType} from '../utils/const';
+import {SortType, FilterType} from '../utils/const';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.SORT_DEFAULT;
+    this._currentFilterType = FilterType.DEFAULT;
 
     this._noPointsComponent = new NoPointsView();
     this._sort = new Sort();

@@ -1,5 +1,4 @@
 import flatpickr from 'flatpickr';
-import dayjs from "dayjs";
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -32,9 +31,19 @@ export const dateParser = {
 };
 
 export const sortPointDownDate = (pointA, pointB) => {
-  return dayjs(pointB.diffDate).diff(dayjs(pointA.diffDate));
+  return pointB.diffDate - pointA.diffDate;
 };
 
 export const sortPointDownPrice = (pointA, pointB) => {
   return pointA.price - pointB.price;
+};
+
+export const filterPointFutureDate = (pointA) => {
+  const now = new Date();
+  return pointA.startTime.getTime() >= now.getTime();
+};
+
+export const filterPointPastDate = (pointA) => {
+  const now = new Date();
+  return pointA.startTime.getTime() < now.getTime();
 };
