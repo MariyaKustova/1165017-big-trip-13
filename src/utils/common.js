@@ -32,7 +32,7 @@ export const dateParser = {
 };
 
 export const sortPointDownDate = (pointA, pointB) => {
-  return dayjs(pointB.duration).diff(dayjs(pointA.duration));
+  return dayjs(pointB.diffDate).diff(dayjs(pointA.diffDate));
 };
 
 export const sortPointDownPrice = (pointA, pointB) => {

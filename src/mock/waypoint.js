@@ -1,5 +1,5 @@
 import {getRandomInteger} from '../utils/common';
-import dayjs from "dayjs";
+import {ConvertTime} from '../utils/const';
 
 const COUNT = 5;
 
@@ -116,12 +116,10 @@ export const generateWaypoint = () => {
   const type = generateEvent(typeWaypoints);
   return {
     id: generateId(),
-    day: `MAR ` + getRandomInteger(1, 31),
+    startTime: new Date(`2019-03-18T12:25`),
+    endTime: new Date(`2019-03-20T12:55`),
     type,
     to: generateEvent(destinations),
-    startTime: `19/03/19 00:00`,
-    endTime: `19/03/19 00:00`,
-    duration: dayjs(Object.endTime).diff(dayjs(Object.startTime)),
     price: getRandomInteger(1, 1000),
     options: generateOptions(type).map((item, index) => {
       return Object.assign({id: index + 1}, item);
@@ -129,5 +127,52 @@ export const generateWaypoint = () => {
     description: generateDescription(),
     photos: generatePhotos(),
     isFavorite: false,
+
+    get start() {
+      return this.startTime.getHours() + `:` + this.startTime.getMinutes();
+    },
+
+    get end() {
+      return this.endTime.getHours() + `:` + this.endTime.getMinutes();
+    },
+
+    get day() {
+      const optionsDate = {month: `short`, day: `numeric`};
+      return this.startTime.toLocaleString(`en-US`, optionsDate);
+    },
+
+    get objectDay() {
+      const optionsMonth = {month: `short`};
+      const optionsDay = {day: `numeric`};
+      return {
+        startDay: this.startTime.toLocaleString(`en-US`, optionsDay),
+        startMonth: this.startTime.toLocaleString(`en-US`, optionsMonth),
+        endDay: this.endTime.toLocaleString(`en-US`, optionsDay),
+        endMonth: this.endTime.toLocaleString(`en-US`, optionsMonth)
+      };
+    },
+
+    get diffDate() {
+      const diff = ((this.endTime.getTime() - this.startTime.getTime()));
+
+      const convertsTime = (duration) => {
+        let minutes = Math.floor((duration / ConvertTime.MIL_IN_MINUTE) % 60);
+        let hours = Math.floor((duration / ConvertTime.MIL_IN_HOUR) % 24);
+        let days = Math.floor(duration / ConvertTime.MIL_IN_DAY);
+
+        days = (days < 10) ? `0` + days : days;
+        hours = (hours < 10) ? `0` + hours : hours;
+        minutes = (minutes < 10) ? `0` + minutes : minutes;
+
+        if (days > 0) {
+          return days + `D` + ` ` + hours + `H` + ` ` + minutes + `M`;
+        } else if (hours > 0) {
+          return hours + `H` + ` ` + minutes + `M`;
+        }
+        return minutes + `M`;
+      };
+
+      return convertsTime(diff);
+    }
   };
 };
