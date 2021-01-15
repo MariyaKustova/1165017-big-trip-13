@@ -2,7 +2,7 @@ import {renderTypeInputs} from './type-group';
 import {renderOfferCheckboxes} from './avialable-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
-import Abstract from '../abstract';
+import Smart from '../smart';
 
 const createFormTemplate = (isEditeble, waypoint) => {
   const {type, to, price, options, description, photos, objectDay} = waypoint;
@@ -71,7 +71,7 @@ const createFormTemplate = (isEditeble, waypoint) => {
 </li>`;
 };
 
-export default class FormEditView extends Abstract {
+export default class FormEditView extends Smart {
   constructor(isEditeble, waypoint) {
     super();
     this._isEditeble = isEditeble;
