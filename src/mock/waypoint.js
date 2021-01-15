@@ -148,7 +148,9 @@ export const generateWaypoint = () => {
         startDay: this.startTime.toLocaleString(`en-US`, optionsDay),
         startMonth: this.startTime.toLocaleString(`en-US`, optionsMonth),
         endDay: this.endTime.toLocaleString(`en-US`, optionsDay),
-        endMonth: this.endTime.toLocaleString(`en-US`, optionsMonth)
+        endMonth: this.endTime.toLocaleString(`en-US`, optionsMonth),
+        startDate: this.startTime.getDay() + `/` + (this.startTime.getMonth() + 1) + `/` + this.startTime.getFullYear() + ` ` + this.start,
+        endDate: this.endTime.getDay() + `/` + (this.endTime.getMonth() + 1) + `/` + this.endTime.getFullYear() + ` ` + this.end,
       };
     },
 

@@ -5,7 +5,7 @@ import {renderSectionDestination} from './section-destination';
 import Abstract from '../abstract';
 
 const createFormTemplate = (isEditeble, waypoint) => {
-  const {type, to, price, startTime, endTime, options, description, photos} = waypoint;
+  const {type, to, price, options, description, photos, objectDay} = waypoint;
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -36,10 +36,10 @@ const createFormTemplate = (isEditeble, waypoint) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${objectDay.startDate}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${objectDay.endDate}">
     </div>
 
     <div class="event__field-group  event__field-group--price">
