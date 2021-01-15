@@ -1,17 +1,16 @@
-import {render, RenderPosition} from '../utils/render';
+import {render, remove, RenderPosition} from '../utils/render';
 import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
 import {updateItem, sortPointDownDate, sortPointDownPrice} from '../utils/common';
-import {SortType, FilterType} from '../utils/const';
+import {SortType} from '../utils/const';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.SORT_DEFAULT;
-    this._currentFilterType = FilterType.DEFAULT;
 
     this._noPointsComponent = new NoPointsView();
     this._sort = new Sort();
@@ -57,7 +56,7 @@ export default class Trip {
     }
 
     this._sortPoint(sortType);
-    this._clearTrip();
+    this.clearTrip();
     this._renderTrip();
   }
 
@@ -68,6 +67,11 @@ export default class Trip {
   _renderSort() {
     render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
     this._sort.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _changeFilter() {
+    render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
+    this._filter.setFilterTypeChangeHandler(this._handleFilterTypeChange);
   }
 
   _renderList() {
@@ -86,11 +90,6 @@ export default class Trip {
     }
   }
 
-  _clearTrip() {
-    Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
-    this._pointPresenter = {};
-  }
-
   _renderTrip() {
     if (this._waypoints.length === 0) {
       this._renderNoPoints();
@@ -100,4 +99,11 @@ export default class Trip {
     this._renderList();
     this._renderPoints();
   }
+
+  clearTrip() {
+    Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
+    remove(this._noPointsComponent);
+  }
+
 }
