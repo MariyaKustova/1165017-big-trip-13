@@ -3,7 +3,7 @@ import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
-import {updateItem, sortPointDownDate, sortPointDownPrice} from '../utils/common';
+import {updateItem, sortPointUpDay, sortPointDownDuration, sortPointDownPrice} from '../utils/common';
 import {SortType} from '../utils/const';
 
 export default class Trip {
@@ -23,7 +23,7 @@ export default class Trip {
 
   init(waypoints) {
     this._waypoints = waypoints.slice();
-    this._sourceWaypoints = waypoints.slice();
+    this._sourceWaypoints = waypoints.sort(sortPointUpDay);
     this._renderTrip();
   }
 
@@ -39,7 +39,7 @@ export default class Trip {
   _sortPoint(sortType) {
     switch (sortType) {
       case SortType.SORT_TIME:
-        this._waypoints.sort(sortPointDownDate);
+        this._waypoints.sort(sortPointDownDuration);
         break;
       case SortType.SORT_PRICE:
         this._waypoints.sort(sortPointDownPrice);
@@ -103,7 +103,8 @@ export default class Trip {
   clearTrip() {
     Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-    remove(this._noPointsComponent);
+    if (this._noPointsComponent) {
+      remove(this._noPointsComponent);
+    }
   }
-
 }

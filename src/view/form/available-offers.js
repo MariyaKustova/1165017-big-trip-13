@@ -9,10 +9,10 @@ const renderOfferCheckbox = ({value, title, price}) => {
 </div>`;
 };
 
-export const renderOfferCheckboxes = (array) => {
-  if (array) {
+export const renderOfferCheckboxes = (options) => {
+  if (options) {
     let result = ``;
-    for (const checkbox of array) {
+    for (const checkbox of options) {
       result += renderOfferCheckbox(checkbox);
     }
     return result;

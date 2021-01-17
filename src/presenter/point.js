@@ -21,8 +21,8 @@ export default class Point {
     this._handleClick = this._handleClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._handleRemoveClick = this._handleRemoveClick.bind(this);
-    this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleFormRemoveClick = this._handleFormRemoveClick.bind(this);
+    this._handleFormCloseClick = this._handleFormCloseClick.bind(this);
   }
 
   init(waypoint) {
@@ -38,8 +38,8 @@ export default class Point {
     this._pointComponent.setClickHandler(this._handleClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._formEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._formEditComponent.setEditClickHandler(this._handleEditClick);
-    this._formEditComponent.setRemoveClickHandler(this._handleRemoveClick);
+    this._formEditComponent.setFormCloseClickHandler(this._handleFormCloseClick);
+    this._formEditComponent.setFormRemoveClickHandler(this._handleFormRemoveClick);
 
     if (prevPointComponent === null || prevFormEditComponent === null) {
       render(this._listComponent, this._pointComponent, RenderPosition.BEFOREEND);
@@ -110,11 +110,11 @@ export default class Point {
     this._replaceFormToPoint();
   }
 
-  _handleRemoveClick() {
+  _handleFormRemoveClick() {
     remove(this._formEditComponent);
   }
 
-  _handleEditClick() {
+  _handleFormCloseClick() {
     this._replaceFormToPoint();
   }
 }

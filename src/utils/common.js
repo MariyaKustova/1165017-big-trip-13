@@ -1,4 +1,4 @@
-import flatpickr from 'flatpickr';
+import {typeWaypointOptionsMap, typeWaypointOptions, destinationsMap, photosMap} from '../utils/const';
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -21,16 +21,11 @@ export const updateItem = (items, update) => {
   ];
 };
 
-export const dateParser = {
-  getDate(date) {
-    flatpickr(date, {
-      enableTime: true,
-      dateFormat: `Y-m-d H:i`,
-    });
-  }
+export const sortPointUpDay = (pointA, pointB) => {
+  return pointA.startTime.getTime() - pointB.startTime.getTime();
 };
 
-export const sortPointDownDate = (pointA, pointB) => {
+export const sortPointDownDuration = (pointA, pointB) => {
   return pointB.diffDate - pointA.diffDate;
 };
 
@@ -46,4 +41,18 @@ export const filterPointFutureDate = (pointA) => {
 export const filterPointPastDate = (pointA) => {
   const now = new Date();
   return pointA.startTime.getTime() < now.getTime();
+};
+
+export const generateOptions = (typeWaypoint) => {
+  return typeWaypointOptions.filter((option) => {
+    return typeWaypointOptionsMap[typeWaypoint.toLowerCase()].includes(option.kind);
+  });
+};
+
+export const generateDescription = (to) => {
+  return destinationsMap.get(to);
+};
+
+export const generatePhotos = (to) => {
+  return photosMap.get(to);
 };

@@ -8,9 +8,9 @@ const renderListItemOffer = ({title, price}) => {
 </li>`;
 };
 
-const generateOffers = (array) => {
+const generateOffers = (options) => {
   let result = ``;
-  for (const element of array) {
+  for (const element of options) {
     result += renderListItemOffer(element);
   }
   return result;

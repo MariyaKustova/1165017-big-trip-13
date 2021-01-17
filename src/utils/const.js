@@ -1,3 +1,7 @@
+import {descriptions, generateRundomPhotos} from '../mock/waypoint';
+
+export const COUNT = 5;
+
 export const SortType = {
   SORT_DEFAULT: `sort-day`,
   SORT_TIME: `sort-time`,
@@ -5,6 +9,7 @@ export const SortType = {
 };
 
 export const ConvertTime = {
+  BORDERLINE_VALUE: 10,
   MIL_IN_MINUTE: 60000,
   MIL_IN_HOUR: 60000 * 60,
   MIL_IN_DAY: 60000 * 60 * 24,
@@ -15,3 +20,67 @@ export const FilterType = {
   FUTURE: `Future`,
   PAST: `Past`,
 };
+
+export const typeWaypointOptionsMap = {
+  'taxi': [1, 2],
+  'bus': [2, 3, 4],
+  'train': [3, 5],
+  'ship': [2, 4, 5],
+  'transport': [1, 2, 3, 5],
+  'check-in': [1, 5],
+  'sightseeing': [1, 3, 5],
+  'restaurant': [2, 4, 5],
+  'flight': [1, 3],
+  'drive': [3, 4]
+};
+
+export const typeWaypointOptions = [{
+  value: `luggage`,
+  title: `Add luggage`,
+  price: 30,
+  checked: true,
+  kind: 1,
+}, {
+  value: `comfort`,
+  title: `Switch to comfort class`,
+  price: 100,
+  checked: true,
+  kind: 2
+}, {
+  value: `meal`,
+  title: `Add meal`,
+  price: 15,
+  checked: true,
+  kind: 3
+}, {
+  value: `seats`,
+  title: `Choose seats`,
+  price: 5,
+  checked: true,
+  kind: 4
+}, {
+  value: `train`,
+  title: `Travel by train`,
+  price: 40,
+  checked: true,
+  kind: 5
+}
+];
+
+export const destinationsMap = new Map([
+  [`Amsterdam`, descriptions[1]],
+  [`Chamonix`, descriptions[4] + descriptions[7]],
+  [`New York`, descriptions[2] + descriptions[3] + descriptions[5] + descriptions[5]],
+  [`Canada`, descriptions[1] + descriptions[3] + descriptions[4]],
+  [`Argentina`, descriptions[5] + descriptions[3] + descriptions[8]],
+  [`Geneva`, descriptions[6] + descriptions[2] + descriptions[1]],
+]);
+
+export const photosMap = new Map([
+  [`Amsterdam`, generateRundomPhotos()],
+  [`Chamonix`, generateRundomPhotos()],
+  [`New York`, generateRundomPhotos()],
+  [`Canada`, generateRundomPhotos()],
+  [`Argentina`, generateRundomPhotos()],
+  [`Geneva`, generateRundomPhotos()],
+]);

@@ -1,7 +1,8 @@
 import {renderTypeInputs} from './type-group';
-import {renderOfferCheckboxes} from './avialable-offers';
+import {renderOfferCheckboxes} from './available-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
+import {updateItem, generateOptions, generateDescription, generatePhotos} from '../../utils/common';
 import Smart from '../smart';
 
 const createFormTemplate = (isEditeble, waypoint) => {
@@ -44,7 +45,7 @@ const createFormTemplate = (isEditeble, waypoint) => {
 
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-1">
-        <span class="visually-hidden">Price</span>
+        <span class="visually-hidden">${price}</span>
         &euro;
       </label>
       <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
@@ -75,19 +76,69 @@ export default class FormEditView extends Smart {
   constructor(isEditeble, waypoint) {
     super();
     this._isEditeble = isEditeble;
-    this._waypoint = waypoint;
+    this._data = FormEditView.parseWaipointToData(waypoint);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._clickHandler = this._clickHandler.bind(this);
+    this._formRemoveClickHandler = this._formRemoveClickHandler.bind(this);
+    this._formCloseClickHandler = this._formCloseClickHandler.bind(this);
+    this._typePointClickHandler = this._typePointClickHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createFormTemplate(this._isEditeble, this._waypoint);
+    return createFormTemplate(this._isEditeble, this._data);
   }
+
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+        {},
+        this._data,
+        update
+    );
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormRemoveClickHandler(this._callback.formRemoveClick);
+    this.setFormCloseClickHandler(this._callback.formCloseClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
+    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
+  }
+
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._waypoint);
+    this._callback.formSubmit(FormEditView.parseDataToWaypoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -95,18 +146,61 @@ export default class FormEditView extends Smart {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  _clickHandler(evt) {
+  _formRemoveClickHandler(evt) {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.formRemoveClick();
   }
 
-  setRemoveClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._clickHandler);
+  setFormRemoveClickHandler(callback) {
+    this._callback.formRemoveClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formRemoveClickHandler);
   }
 
-  setEditClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+  _formCloseClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.formCloseClick();
+  }
+
+  setFormCloseClickHandler(callback) {
+    this._callback.formCloseClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCloseClickHandler);
+  }
+
+  _typePointClickHandler(evt) {
+    evt.preventDefault();
+    const type = evt.target.dataset.typeInput;
+    this.updateData({
+      type,
+      options: generateOptions(type).map((item, index) => {
+        return Object.assign({id: index + 1}, item);
+      })
+    });
+  }
+
+  _destinationInputHandler(evt) {
+    evt.preventDefault();
+    const to = evt.target.value;
+    this.updateData({
+      to,
+    }, true);
+    this.updateData({
+      description: generateDescription(to),
+      photos: generatePhotos(to),
+    });
+  }
+
+  _offerChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      options: updateItem(this._data.options, evt.target)
+    });
+  }
+
+  static parseWaipointToData(waypoint) {
+    return Object.assign({}, waypoint);
+  }
+
+  static parseDataToWaypoint(data) {
+    return Object.assign({}, data);
   }
 }
