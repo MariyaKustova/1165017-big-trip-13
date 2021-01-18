@@ -79,7 +79,8 @@ export default class FormEditView extends Smart {
     super();
     this._isEditeble = isEditeble;
     this._data = FormEditView.parseWaipointToData(waypoint);
-    this._datepicker = null;
+    this._startDatepicker = null;
+    this._endDatepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRemoveClickHandler = this._formRemoveClickHandler.bind(this);
@@ -87,10 +88,12 @@ export default class FormEditView extends Smart {
     this._typePointClickHandler = this._typePointClickHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
-    // this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
-    // this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setStartDatepicker();
+    this._setEndDatepicker();
   }
 
   getTemplate() {
@@ -129,27 +132,44 @@ export default class FormEditView extends Smart {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setStartDatepicker();
+    this._setEndDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormRemoveClickHandler(this._callback.formRemoveClick);
     this.setFormCloseClickHandler(this._callback.formCloseClick);
   }
 
-  _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+  _setStartDatepicker() {
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
     }
 
-    this._datepicker = flatpickr(
-        this.getElement().querySelector(`.card__date`),
+    this._startDatepicker = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
         {
-          dateFormat: `j F`,
-          defaultDate: this._data.dueDate,
-          onChange: this._dueDateChangeHandler // На событие flatpickr передаём наш колбэк
+          dateFormat: `d/m/y H:i`,
+          defaultDate: Date.now(),
+          onChange: this._startDateChangeHandler
         }
     );
   }
 
+  _setEndDatepicker() {
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+
+    this._endDatepicker = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          dateFormat: `d/m/y H:i`,
+          defaultDate: this._data.startTime,
+          onChange: this._endDateChangeHandler
+        }
+    );
+  }
 
   _setInnerHandlers() {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
@@ -223,6 +243,20 @@ export default class FormEditView extends Smart {
     }
     this.updateData({
       options: updateItem(this._data.options, options)
+    });
+  }
+
+  _startDateChangeHandler([userStartDate]) {
+    this.getElement().querySelector(`#event-start-time-1`).value = new Date(userStartDate);
+    this.updateData({
+      startTime: new Date(userStartDate)
+    });
+  }
+
+  _endDateChangeHandler([userEndDate]) {
+    this.getElement().querySelector(`#event-end-time-1`).value = new Date(userEndDate);
+    this.updateData({
+      endTime: new Date(userEndDate)
     });
   }
 
