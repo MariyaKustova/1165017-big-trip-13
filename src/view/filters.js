@@ -1,6 +1,5 @@
 import Abstract from './abstract';
 import {FilterType} from '../utils/const';
-// import {filterPointFutureDate, filterPointPastDate} from '../utils/common';
 
 const createFiltersTemplate = () => {
   return `<form class="trip-filters" action="#" method="get">

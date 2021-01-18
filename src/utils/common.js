@@ -1,4 +1,5 @@
-import {typeWaypointOptionsMap, typeWaypointOptions, destinationsMap, photosMap} from '../utils/const';
+import {destinationsMap, photosMap} from '../utils/const';
+
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -41,12 +42,6 @@ export const filterPointFutureDate = (pointA) => {
 export const filterPointPastDate = (pointA) => {
   const now = new Date();
   return pointA.startTime.getTime() < now.getTime();
-};
-
-export const generateOptions = (typeWaypoint) => {
-  return typeWaypointOptions.filter((option) => {
-    return typeWaypointOptionsMap[typeWaypoint.toLowerCase()].includes(option.kind);
-  });
 };
 
 export const generateDescription = (to) => {

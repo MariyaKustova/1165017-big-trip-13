@@ -1,6 +1,6 @@
-import {getRandomInteger, generateOptions} from '../utils/common';
+import {getRandomInteger, generateDescription} from '../utils/common';
 import {ConvertTime} from '../utils/const';
-import {generateDescription} from '../utils/common';
+import {generateOptions} from '../view/form/available-offers';
 
 const COUNT = 5;
 

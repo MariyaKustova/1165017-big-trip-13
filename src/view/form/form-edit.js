@@ -1,9 +1,11 @@
 import {renderTypeInputs} from './type-group';
-import {renderOfferCheckboxes} from './available-offers';
+import {renderOfferCheckboxes, generateOptions} from './available-offers';
 import {renderDestinationList} from './destination-list';
 import {renderSectionDestination} from './section-destination';
-import {updateItem, generateOptions, generateDescription, generatePhotos} from '../../utils/common';
+import {updateItem, generateDescription, generatePhotos} from '../../utils/common';
 import Smart from '../smart';
+import flatpickr from "flatpickr";
+import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createFormTemplate = (isEditeble, waypoint) => {
   const {type, to, price, options, description, photos, objectDay} = waypoint;
@@ -77,6 +79,7 @@ export default class FormEditView extends Smart {
     super();
     this._isEditeble = isEditeble;
     this._data = FormEditView.parseWaipointToData(waypoint);
+    this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRemoveClickHandler = this._formRemoveClickHandler.bind(this);
@@ -84,6 +87,8 @@ export default class FormEditView extends Smart {
     this._typePointClickHandler = this._typePointClickHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
+    // this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    // this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -128,6 +133,23 @@ export default class FormEditView extends Smart {
     this.setFormRemoveClickHandler(this._callback.formRemoveClick);
     this.setFormCloseClickHandler(this._callback.formCloseClick);
   }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`.card__date`),
+        {
+          dateFormat: `j F`,
+          defaultDate: this._data.dueDate,
+          onChange: this._dueDateChangeHandler // На событие flatpickr передаём наш колбэк
+        }
+    );
+  }
+
 
   _setInnerHandlers() {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
@@ -191,8 +213,16 @@ export default class FormEditView extends Smart {
 
   _offerChangeHandler(evt) {
     evt.preventDefault();
+    let options = [];
+    for (let option of this._data.options) {
+      if (option.value === evt.target.dataset.valueOffer) {
+        option.checked = false;
+        options = updateItem(this._data.options, option);
+        break;
+      }
+    }
     this.updateData({
-      options: updateItem(this._data.options, evt.target)
+      options: updateItem(this._data.options, options)
     });
   }
 
