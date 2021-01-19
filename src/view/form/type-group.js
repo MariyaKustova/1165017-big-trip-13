@@ -1,50 +1,40 @@
 const inputs = [
   {
-    value: `taxi`,
-    text: `Taxi`
+    value: `Taxi`
   },
   {
-    value: `bus`,
-    text: `Bus`
+    value: `Bus`
   },
   {
-    value: `train`,
-    text: `Train`
+    value: `Train`
   },
   {
-    value: `ship`,
-    text: `Ship`
+    value: `Ship`
   },
   {
-    value: `transport`,
-    text: `Transport`
+    value: `Transport`
   },
   {
-    value: `drive`,
-    text: `Drive`
+    value: `Drive`
   },
   {
-    value: `flight`,
-    text: `Flight`
+    value: `Flight`
   },
   {
-    value: `check-in`,
-    text: `Check-in`
+    value: `Check-in`
   },
   {
-    value: `sightseeing`,
-    text: `Sightseeing`
+    value: `Sightseeing`
   },
   {
-    value: `restaurant`,
-    text: `Restaurant`
+    value: `Restaurant`
   }
 ];
 
-const renderTypeInput = ({value, text}) => {
+const renderTypeInput = ({value}) => {
   return `<div class="event__type-item">
-  <input id="event-type-${value}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${value}">
-  <label class="event__type-label  event__type-label--${value}" for="event-type-${value}-1">${text}</label>
+  <input id="event-type-${value.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${value.toLowerCase()}">
+  <label class="event__type-label  event__type-label--${value.toLowerCase()}" for="event-type-${value.toLowerCase()}-1" data-type-input = "${value}">${value}</label>
 </div>`;
 };
 

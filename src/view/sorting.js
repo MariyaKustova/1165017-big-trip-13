@@ -1,49 +1,53 @@
 import Abstract from './abstract';
-
-const typesSort = [
-  {
-    value: `day`,
-    text: `Day`
-  },
-  {
-    value: `event`,
-    text: `Event`
-  },
-  {
-    value: `time`,
-    text: `Time`
-  },
-  {
-    value: `price`,
-    text: `Price`
-  },
-  {
-    value: `offer`,
-    text: `Offer`
-  }
-];
-
-const generateSorting = () => {
-  let result = ``;
-  for (const element of typesSort) {
-    const {value, text} = element;
-    result += `<div class="trip-sort__item  trip-sort__item--${value}">
-    <input id="sort-${value}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${value}">
-    <label class="trip-sort__btn" for="sort-${value}">${text}</label>
-  </div>`;
-  }
-  return result;
-};
+import {SortType} from '../utils/const';
 
 
 const createSortingTemplate = () => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-  ${generateSorting()}
+  <div class="trip-sort__item  trip-sort__item--day">
+    <input id="sort-day" class="trip-sort__input  visually-hidden" data-sort-type="${SortType.SORT_DEFAULT}" type="radio" name="trip-sort" value="sort-day">
+    <label class="trip-sort__btn" for="sort-day">Day</label>
+  </div>
+
+  <div class="trip-sort__item  trip-sort__item--event">
+    <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
+    <label class="trip-sort__btn" for="sort-event">Event</label>
+  </div>
+
+  <div class="trip-sort__item  trip-sort__item--time">
+    <input id="sort-time" class="trip-sort__input  visually-hidden" data-sort-type="${SortType.SORT_TIME}" type="radio" name="trip-sort" value="sort-time">
+    <label class="trip-sort__btn" for="sort-time">Time</label>
+  </div>
+
+  <div class="trip-sort__item  trip-sort__item--price">
+    <input id="sort-price" class="trip-sort__input  visually-hidden" data-sort-type="${SortType.SORT_PRICE}" type="radio" name="trip-sort" value="sort-price" checked>
+    <label class="trip-sort__btn" for="sort-price">Price</label>
+  </div>
+
+  <div class="trip-sort__item  trip-sort__item--offer">
+    <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
+    <label class="trip-sort__btn" for="sort-offer">Offers</label>
+  </div>
 </form>`;
 };
 
-export default class SortingView extends Abstract {
+export default class Sort extends Abstract {
+  constructor() {
+    super();
+
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+  }
+
   getTemplate() {
     return createSortingTemplate();
+  }
+
+  _sortTypeChangeHandler(evt) {
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 }
