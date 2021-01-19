@@ -149,7 +149,7 @@ export default class FormEditView extends Smart {
         this.getElement().querySelector(`#event-start-time-1`),
         {
           dateFormat: `d/m/y H:i`,
-          defaultDate: Date.now(),
+          defaultDate: this._data.startTime,
           onChange: this._startDateChangeHandler
         }
     );
@@ -165,7 +165,8 @@ export default class FormEditView extends Smart {
         this.getElement().querySelector(`#event-end-time-1`),
         {
           dateFormat: `d/m/y H:i`,
-          defaultDate: this._data.startTime,
+          defaultDate: this._data.endTime,
+          minDate: this._data.startTime,
           onChange: this._endDateChangeHandler
         }
     );
@@ -247,16 +248,16 @@ export default class FormEditView extends Smart {
   }
 
   _startDateChangeHandler([userStartDate]) {
-    this.getElement().querySelector(`#event-start-time-1`).value = new Date(userStartDate);
     this.updateData({
-      startTime: new Date(userStartDate)
-    });
+      startTime: userStartDate
+    }, true);
+    this._setEndDatepicker();
   }
 
   _endDateChangeHandler([userEndDate]) {
     this.getElement().querySelector(`#event-end-time-1`).value = new Date(userEndDate);
     this.updateData({
-      endTime: new Date(userEndDate)
+      endTime: userEndDate
     });
   }
 

@@ -21,6 +21,12 @@ export const FilterType = {
   PAST: `Past`,
 };
 
+export const FilterTypeMap = {
+  DEFAULT: `Everything`,
+  FUTURE: `Future`,
+  PAST: `Past`,
+};
+
 export const destinationsMap = new Map([
   [`Amsterdam`, descriptions[1]],
   [`Chamonix`, descriptions[4] + descriptions[7]],

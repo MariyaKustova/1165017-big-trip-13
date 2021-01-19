@@ -4,16 +4,16 @@ import {FilterType} from '../utils/const';
 const createFiltersTemplate = () => {
   return `<form class="trip-filters" action="#" method="get">
   <div class="trip-filters__filter">
-    <input id="filter-${FilterType.DEFAULT.toLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.DEFAULT.toLowerCase}">
-    <label class="trip-filters__filter-label" for="filter-${FilterType.DEFAULT.toLowerCase}" data-filter-type="${FilterType.DEFAULT}">${FilterType.DEFAULT}</label>
+    <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
+    <label class="trip-filters__filter-label" for="filter-everything" data-filter-type="${FilterType.DEFAULT}">Everything</label>
   </div>
   <div class="trip-filters__filter">
-    <input id="filter-${FilterType.FUTURE.toLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.FUTURE.toLowerCase}">
-    <label class="trip-filters__filter-label" for="filter-${FilterType.FUTURE.toLowerCase}" data-filter-type="${FilterType.FUTURE}">${FilterType.FUTURE}</label>
+    <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
+    <label class="trip-filters__filter-label" for="filter-future" data-filter-type="${FilterType.FUTURE}">Future</label>
   </div>
   <div class="trip-filters__filter">
-    <input id="filter-${FilterType.PAST.toLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.PAST.toLowerCase}">
-    <label class="trip-filters__filter-label" for="filter-${FilterType.PAST.toLowerCase}"  data-filter-type="${FilterType.PAST}">${FilterType.PAST}</label>
+    <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past">
+    <label class="trip-filters__filter-label" for="filter-past"  data-filter-type="${FilterType.PAST}">Past</label>
   </div>
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
