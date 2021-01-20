@@ -1,6 +1,7 @@
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
+import {UserAction, UpdateType} from "../utils/const";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -95,6 +96,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._waypoint,
@@ -106,7 +109,7 @@ export default class Point {
   }
 
   _handleFormSubmit(waypoint) {
-    this._changeData(waypoint);
+    this._changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, waypoint);
     this._replaceFormToPoint();
   }
 

@@ -27,6 +27,18 @@ export const FilterTypeMap = {
   PAST: `Past`,
 };
 
+export const UserAction = {
+  UPDATE_POINT: `UPDATE_POINT`,
+  ADD_POINT: `ADD_POINT`,
+  DELETE_POINT: `DELETE_POINT`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
 export const destinationsMap = new Map([
   [`Amsterdam`, descriptions[1]],
   [`Chamonix`, descriptions[4] + descriptions[7]],
