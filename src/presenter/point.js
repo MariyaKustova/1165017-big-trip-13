@@ -1,7 +1,7 @@
-import {render, RenderPosition, replace, remove} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
-import {UserAction, UpdateType} from "../utils/const";
+import {UserAction, UpdateType, RenderPosition} from "../utils/const";
 
 const Mode = {
   DEFAULT: `DEFAULT`,

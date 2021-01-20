@@ -1,10 +1,10 @@
-import {render, remove, RenderPosition} from '../utils/render';
+import {render, remove} from '../utils/render';
 import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
 import {sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/common';
-import {SortType, UpdateType, UserAction} from '../utils/const';
+import {SortType, UpdateType, UserAction, RenderPosition} from '../utils/const';
 
 export default class Trip {
   constructor(tripContainer, pointsModel) {
@@ -14,7 +14,7 @@ export default class Trip {
     this._currentSortType = SortType.SORT_DEFAULT;
 
     this._noPointsComponent = new NoPointsView();
-    this._sort = new Sort();
+    this._sort = null;
     this._listComponent = new ListView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -72,10 +72,12 @@ export default class Trip {
         this._pointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this._clearTrip();
+        this._renderTrip();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this._clearTrip({resetSortType: true});
+        this._renderTrip();
         break;
     }
   }
@@ -95,8 +97,12 @@ export default class Trip {
   }
 
   _renderSort() {
-    render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
+    if (this._sort !== null) {
+      this._sort = null;
+    }
+    this._sort = new Sort(this._currentSortType);
     this._sort.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
   }
 
   _changeFilter() {
@@ -119,17 +125,21 @@ export default class Trip {
   _renderTrip() {
     if (this._getPoints.length === 0) {
       this._renderNoPoints();
+      return;
     }
 
     this._renderSort();
     this._renderPoints();
   }
 
-  clearTrip() {
+  _clearTrip({resetSortType = false} = {}) {
     Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-    if (this._noPointsComponent) {
-      remove(this._noPointsComponent);
+    remove(this._sort);
+    remove(this._noPointsComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
     }
   }
 }

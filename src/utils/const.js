@@ -2,6 +2,12 @@ import {descriptions, generateRundomPhotos} from '../mock/waypoint';
 
 export const COUNT = 5;
 
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREEND: `beforeend`,
+};
+
 export const SortType = {
   SORT_DEFAULT: `sort-day`,
   SORT_TIME: `sort-time`,

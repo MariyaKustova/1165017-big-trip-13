@@ -1,10 +1,10 @@
-import {render, RenderPosition} from './utils/render';
+import {render} from './utils/render';
 import TripInfoView from './view/trip-info';
 import MenuView from './view/menu';
 import Filters from './view/filters';
 import {generateWaypoint} from './mock/waypoint';
 import Trip from './presenter/trip';
-import {FilterType} from './utils/const';
+import {FilterType, RenderPosition} from './utils/const';
 import {filterPointFutureDate, filterPointPastDate} from './utils/common';
 import PointsModel from './model/points';
 
