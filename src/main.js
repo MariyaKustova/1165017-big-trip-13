@@ -33,8 +33,7 @@ const handleFilterTypeChange = (filterType) => {
   trip.clearTrip();
   switch (filterType) {
     case FilterType.FUTURE:
-      const filteredWaypoints = waypoints.filter(filterPointFutureDate);
-      trip.init(filteredWaypoints);
+      trip.init(waypoints.filter(filterPointFutureDate));
       break;
     case FilterType.PAST:
       trip.init(waypoints.filter(filterPointPastDate));

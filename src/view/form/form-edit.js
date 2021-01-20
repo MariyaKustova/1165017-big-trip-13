@@ -96,6 +96,20 @@ export default class FormEditView extends Smart {
     this._setEndDatepicker();
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
+    }
+
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+  }
+
   getTemplate() {
     return createFormTemplate(this._isEditeble, this._data);
   }
@@ -191,7 +205,7 @@ export default class FormEditView extends Smart {
 
   _formRemoveClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formRemoveClick();
+    this._callback.formRemoveClick(FormEditView.parseDataToWaypoint(this._data));
   }
 
   setFormRemoveClickHandler(callback) {

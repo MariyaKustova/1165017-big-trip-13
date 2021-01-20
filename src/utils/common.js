@@ -51,3 +51,7 @@ export const generateDescription = (to) => {
 export const generatePhotos = (to) => {
   return photosMap.get(to);
 };
+
+export const isDatesEqual = (dateA, dateB) => {
+  return (dateA.getTime() === dateB.getTime()) ? true : false;
+};

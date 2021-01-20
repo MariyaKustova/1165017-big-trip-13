@@ -27,20 +27,19 @@ export default class Trip {
 
   init() {
     render(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
-
     this._renderTrip();
   }
 
   _getPoints() {
     switch (this._currentSortType) {
       case SortType.SORT_DEFAULT:
-        this.this._pointsModel.getPoints().sort(sortPointsUpDay);
+        this._pointsModel.getPoints().sort(sortPointsUpDay);
         break;
       case SortType.SORT_TIME:
-        this.this._pointsModel.getPoints().sort(sortPointsDownDuration);
+        this._pointsModel.getPoints().sort(sortPointsDownDuration);
         break;
       case SortType.SORT_PRICE:
-        this.this._pointsModel.getPoints().sort(sortPointsDownPrice);
+        this._pointsModel.getPoints().sort(sortPointsDownPrice);
         break;
     }
 
@@ -72,11 +71,11 @@ export default class Trip {
         this._pointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._clearTrip();
+        this.clearTrip();
         this._renderTrip();
         break;
       case UpdateType.MAJOR:
-        this._clearTrip({resetSortType: true});
+        this.clearTrip({resetSortType: true});
         this._renderTrip();
         break;
     }
@@ -116,23 +115,25 @@ export default class Trip {
     this._pointPresenter[waypoint.id] = pointPresenter;
   }
 
-  _renderPoints() {
-    for (const waypoint of this._waypoints) {
+  _renderPoints(waypoints) {
+    waypoints.forEach((waypoint) => {
       this._renderPoint(waypoint);
-    }
+    });
   }
 
   _renderTrip() {
-    if (this._getPoints.length === 0) {
+    const waypoints = this._getPoints();
+    const waypointsCount = waypoints.length;
+    if (waypointsCount === 0) {
       this._renderNoPoints();
       return;
     }
 
     this._renderSort();
-    this._renderPoints();
+    this._renderPoints(waypoints);
   }
 
-  _clearTrip({resetSortType = false} = {}) {
+  clearTrip({resetSortType = false} = {}) {
     Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
     remove(this._sort);

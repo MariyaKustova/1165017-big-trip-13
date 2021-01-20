@@ -2,6 +2,7 @@ import {render, replace, remove} from '../utils/render';
 import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
 import {UserAction, UpdateType, RenderPosition} from "../utils/const";
+import {isDatesEqual} from "../utils/common";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -108,13 +109,23 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(waypoint) {
-    this._changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, waypoint);
+  _handleFormSubmit(update) {
+    const isMinorUpdate = isDatesEqual(this._waypoint.startTime, update.startTime);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
     this._replaceFormToPoint();
   }
 
-  _handleFormRemoveClick() {
-    remove(this._formEditComponent);
+  _handleFormRemoveClick(waypoint) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        waypoint
+    );
+    this._replaceFormToPoint();
   }
 
   _handleFormCloseClick() {
