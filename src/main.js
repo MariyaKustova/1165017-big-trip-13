@@ -6,10 +6,14 @@ import {generateWaypoint} from './mock/waypoint';
 import Trip from './presenter/trip';
 import {FilterType} from './utils/const';
 import {filterPointFutureDate, filterPointPastDate} from './utils/common';
+import PointsModel from './model/points';
 
 const POINT_COUNT = 20;
 
 export const waypoints = new Array(POINT_COUNT).fill().map(generateWaypoint);
+
+const pointsModel = new PointsModel();
+pointsModel.setPoints(waypoints);
 
 const siteBodyElement = document.querySelector(`.page-body`);
 const tripMain = siteBodyElement.querySelector(`.trip-main`);
@@ -47,7 +51,7 @@ const renderFilter = function (headerContainer) {
 };
 
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);
-const trip = new Trip(tripEvents);
+const trip = new Trip(tripEvents, pointsModel);
 
 renderHeader(tripMain);
 renderFilter(tripMain);

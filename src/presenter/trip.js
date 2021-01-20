@@ -7,7 +7,8 @@ import {updateItem, sortPointUpDay, sortPointDownDuration, sortPointDownPrice} f
 import {SortType} from '../utils/const';
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel) {
+    this._pointsModel = pointsModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.SORT_DEFAULT;
@@ -25,6 +26,10 @@ export default class Trip {
     this._waypoints = waypoints.slice();
     this._sourceWaypoints = waypoints.sort(sortPointUpDay);
     this._renderTrip();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _handleModeChange() {
