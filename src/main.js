@@ -55,4 +55,4 @@ const trip = new Trip(tripEvents, pointsModel);
 
 renderHeader(tripMain);
 renderFilter(tripMain);
-trip.init(waypoints);
+trip.init();

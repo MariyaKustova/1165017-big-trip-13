@@ -22,15 +22,15 @@ export const updateItem = (items, update) => {
   ];
 };
 
-export const sortPointUpDay = (pointA, pointB) => {
+export const sortPointsUpDay = (pointA, pointB) => {
   return pointA.startTime.getTime() - pointB.startTime.getTime();
 };
 
-export const sortPointDownDuration = (pointA, pointB) => {
+export const sortPointsDownDuration = (pointA, pointB) => {
   return pointB.diffDate - pointA.diffDate;
 };
 
-export const sortPointDownPrice = (pointA, pointB) => {
+export const sortPointsDownPrice = (pointA, pointB) => {
   return pointA.price - pointB.price;
 };
 

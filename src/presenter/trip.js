@@ -3,7 +3,7 @@ import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
-import {updateItem, sortPointUpDay, sortPointDownDuration, sortPointDownPrice} from '../utils/common';
+import {updateItem, sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/common';
 import {SortType} from '../utils/const';
 
 export default class Trip {
@@ -22,13 +22,25 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(waypoints) {
-    this._waypoints = waypoints.slice();
-    this._sourceWaypoints = waypoints.sort(sortPointUpDay);
+  init() {
+    render(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
+
     this._renderTrip();
   }
 
   _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.SORT_DEFAULT:
+        this.this._pointsModel.getPoints().sort(sortPointsUpDay);
+        break;
+      case SortType.SORT_TIME:
+        this.this._pointsModel.getPoints().sort(sortPointsDownDuration);
+        break;
+      case SortType.SORT_PRICE:
+        this.this._pointsModel.getPoints().sort(sortPointsDownPrice);
+        break;
+    }
+
     return this._pointsModel.getPoints();
   }
 
@@ -37,22 +49,7 @@ export default class Trip {
   }
 
   _handlePointChange(updatedPoint) {
-    this._waypoints = updateItem(this._waypoints, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  }
-
-  _sortPoint(sortType) {
-    switch (sortType) {
-      case SortType.SORT_TIME:
-        this._waypoints.sort(sortPointDownDuration);
-        break;
-      case SortType.SORT_PRICE:
-        this._waypoints.sort(sortPointDownPrice);
-        break;
-      default:
-        this._waypoints = this._sourceWaypoints.slice();
-    }
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {
@@ -60,7 +57,7 @@ export default class Trip {
       return;
     }
 
-    this._sortPoint(sortType);
+    this._currentSortType = sortType;
     this.clearTrip();
     this._renderTrip();
   }
@@ -79,10 +76,6 @@ export default class Trip {
     this._filter.setFilterTypeChangeHandler(this._handleFilterTypeChange);
   }
 
-  _renderList() {
-    render(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
-  }
-
   _renderPoint(waypoint) {
     const pointPresenter = new PointPresenter(this._listComponent, this._handlePointChange, this._handleModeChange);
     pointPresenter.init(waypoint);
@@ -96,12 +89,11 @@ export default class Trip {
   }
 
   _renderTrip() {
-    if (this._waypoints.length === 0) {
+    if (this._getPoints.length === 0) {
       this._renderNoPoints();
     }
 
     this._renderSort();
-    this._renderList();
     this._renderPoints();
   }
 
