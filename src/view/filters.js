@@ -1,34 +1,37 @@
 import Abstract from './abstract';
-import {FilterType} from '../utils/const';
 
-const createFiltersTemplate = () => {
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name} = filter;
+
+  return `<div class="trip-filters__filter">
+    <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${(currentFilterType === type) ? `checked` : ``}>
+    <label class="trip-filters__filter-label" for="filter-${name}" data-filter-type="${name}">${name}</label>
+  </div>`;
+};
+
+export const createFilterTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType))
+  .join(``);
+
   return `<form class="trip-filters" action="#" method="get">
-  <div class="trip-filters__filter">
-    <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
-    <label class="trip-filters__filter-label" for="filter-everything" data-filter-type="${FilterType.DEFAULT}">Everything</label>
-  </div>
-  <div class="trip-filters__filter">
-    <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-    <label class="trip-filters__filter-label" for="filter-future" data-filter-type="${FilterType.FUTURE}">Future</label>
-  </div>
-  <div class="trip-filters__filter">
-    <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past">
-    <label class="trip-filters__filter-label" for="filter-past"  data-filter-type="${FilterType.PAST}">Past</label>
-  </div>
+
+  ${filterItemsTemplate}
+
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
 };
 
 export default class Filters extends Abstract {
-  constructor() {
+  constructor(filters, currentFilterType) {
     super();
-    this._currentFilterType = FilterType.DEFAULT;
+    this._filters = filters;
+    this._currentFilterType = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFiltersTemplate();
+    return createFilterTemplate(this._filters, this._currentFilterType);
   }
 
   get currentModeFilter() {

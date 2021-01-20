@@ -22,15 +22,9 @@ export const ConvertTime = {
 };
 
 export const FilterType = {
-  DEFAULT: `Everything`,
-  FUTURE: `Future`,
-  PAST: `Past`,
-};
-
-export const FilterTypeMap = {
-  DEFAULT: `Everything`,
-  FUTURE: `Future`,
-  PAST: `Past`,
+  DEFAULT: `everything`,
+  FUTURE: `future`,
+  PAST: `past`,
 };
 
 export const UserAction = {

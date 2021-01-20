@@ -31,17 +31,7 @@ export const sortPointsDownDuration = (pointA, pointB) => {
 };
 
 export const sortPointsDownPrice = (pointA, pointB) => {
-  return pointA.price - pointB.price;
-};
-
-export const filterPointFutureDate = (pointA) => {
-  const now = new Date();
-  return pointA.startTime.getTime() >= now.getTime();
-};
-
-export const filterPointPastDate = (pointA) => {
-  const now = new Date();
-  return pointA.startTime.getTime() < now.getTime();
+  return pointB.price - pointA.price;
 };
 
 export const generateDescription = (to) => {
