@@ -7,6 +7,7 @@ import Trip from './presenter/trip';
 import {FilterType, RenderPosition} from './utils/const';
 import {filterPointFutureDate, filterPointPastDate} from './utils/common';
 import PointsModel from './model/points';
+import FilterModel from './model/filter';
 
 const POINT_COUNT = 20;
 
@@ -14,6 +15,8 @@ export const waypoints = new Array(POINT_COUNT).fill().map(generateWaypoint);
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(waypoints);
+
+const filterModel = new FilterModel();
 
 const siteBodyElement = document.querySelector(`.page-body`);
 const tripMain = siteBodyElement.querySelector(`.trip-main`);
