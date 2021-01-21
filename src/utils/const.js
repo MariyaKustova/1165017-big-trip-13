@@ -39,6 +39,12 @@ export const UpdateType = {
   MAJOR: `MAJOR`
 };
 
+export const MenuItem = {
+  ADD_NEW_POINT: `ADD_NEW_POINT`,
+  TABLE: `TABLE`,
+  STATS: `STATS`
+};
+
 export const destinationsMap = new Map([
   [`Amsterdam`, descriptions[1]],
   [`Chamonix`, descriptions[4] + descriptions[7]],

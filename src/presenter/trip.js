@@ -3,14 +3,15 @@ import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
+import PointNewPresenter from './point-new';
 import {sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/common';
 import {SortType, UpdateType, UserAction, RenderPosition} from '../utils/const';
 import {filter} from "../utils/filter.js";
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel) {
-    this._filterModel = filterModel;
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.SORT_DEFAULT;
@@ -24,13 +25,27 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    this._pointNewPresenter = new PointNewPresenter(this._listComponent, this._handleViewAction);
   }
 
   init() {
     render(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
     this._renderTrip();
+  }
+
+  destroy() {
+    this.clearTrip({resetSortType: true});
+
+    remove(this._listComponent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  createPoint(callback) {
+    this._pointNewPresenter.init(callback);
   }
 
   _getPoints() {
@@ -51,6 +66,7 @@ export default class Trip {
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
   }
 
@@ -59,10 +75,10 @@ export default class Trip {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
         break;
-      case UserAction.ADD_TASK:
+      case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
         break;
-      case UserAction.DELETE_TASK:
+      case UserAction.DELETE_POINT:
         this._pointsModel.deletePoint(updateType, update);
         break;
     }
@@ -71,7 +87,6 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this._pointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
@@ -138,6 +153,7 @@ export default class Trip {
   }
 
   clearTrip({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
     remove(this._sort);

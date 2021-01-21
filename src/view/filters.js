@@ -41,6 +41,7 @@ export default class Filters extends Abstract {
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
+    document.querySelector(`.trip-main__event-add-btn`).removeAttribute(`disabled`);
   }
 
   setFilterTypeChangeHandler(callback) {

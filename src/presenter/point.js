@@ -25,6 +25,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormRemoveClick = this._handleFormRemoveClick.bind(this);
     this._handleFormCloseClick = this._handleFormCloseClick.bind(this);
+    this._onEscKeyDownHendler = this._onEscKeyDownHendler.bind(this);
   }
 
   init(waypoint) {
@@ -73,20 +74,20 @@ export default class Point {
 
   _replacePointToForm() {
     replace(this._formEditComponent, this._pointComponent);
-    document.addEventListener(`keydown`, this._onEscKeyDown);
+    document.addEventListener(`keydown`, this._onEscKeyDownHendler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     replace(this._pointComponent, this._formEditComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this._onEscKeyDownHendler);
     this._mode = Mode.DEFAULT;
   }
 
-  _onEscKeyDown(evt) {
+  _onEscKeyDownHendler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      evt.preventDefault();
+      this._formEditComponent.reset(this._pointComponent);
       this._replaceFormToPoint();
     }
   }
