@@ -13,8 +13,8 @@ const renderContainerPhotosTemplate = (photos) => {
 </div>`;
 };
 
-const createPhotos = (isEditeble, array) => {
-  if (isEditeble) {
+const createPhotos = (isEditable, array) => {
+  if (isEditable) {
     return ``;
   } else if (array) {
     let photos = [];
@@ -26,13 +26,13 @@ const createPhotos = (isEditeble, array) => {
   return ``;
 };
 
-export const renderSectionDestination = (isEditeble, description, photos) => {
+export const renderSectionDestination = (isEditable, description, photos) => {
   if (description || photos) {
     return `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     ${renderDescription(description)}
 
-    ${createPhotos(isEditeble, photos)}
+    ${createPhotos(isEditable, photos)}
   </section>`;
   }
   return ``;

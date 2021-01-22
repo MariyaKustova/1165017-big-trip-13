@@ -2,6 +2,12 @@ import {descriptions, generateRundomPhotos} from '../mock/waypoint';
 
 export const COUNT = 5;
 
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREEND: `beforeend`,
+};
+
 export const SortType = {
   SORT_DEFAULT: `sort-day`,
   SORT_TIME: `sort-time`,
@@ -16,9 +22,27 @@ export const ConvertTime = {
 };
 
 export const FilterType = {
-  DEFAULT: `Everything`,
-  FUTURE: `Future`,
-  PAST: `Past`,
+  DEFAULT: `everything`,
+  FUTURE: `future`,
+  PAST: `past`,
+};
+
+export const UserAction = {
+  UPDATE_POINT: `UPDATE_POINT`,
+  ADD_POINT: `ADD_POINT`,
+  DELETE_POINT: `DELETE_POINT`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
+export const MenuItem = {
+  ADD_NEW_POINT: `ADD_NEW_POINT`,
+  TABLE: `TABLE`,
+  STATS: `STATS`
 };
 
 export const destinationsMap = new Map([
@@ -38,3 +62,4 @@ export const photosMap = new Map([
   [`Argentina`, generateRundomPhotos()],
   [`Geneva`, generateRundomPhotos()],
 ]);
+

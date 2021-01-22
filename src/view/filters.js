@@ -1,34 +1,37 @@
 import Abstract from './abstract';
-import {FilterType} from '../utils/const';
 
-const createFiltersTemplate = () => {
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name} = filter;
+
+  return `<div class="trip-filters__filter">
+    <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${(currentFilterType === type) ? `checked` : ``}>
+    <label class="trip-filters__filter-label" for="filter-${name}" data-filter-type="${name}">${name}</label>
+  </div>`;
+};
+
+export const createFilterTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType))
+  .join(``);
+
   return `<form class="trip-filters" action="#" method="get">
-  <div class="trip-filters__filter">
-    <input id="filter-${FilterType.DEFAULT.toLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.DEFAULT.toLowerCase}">
-    <label class="trip-filters__filter-label" for="filter-${FilterType.DEFAULT.toLowerCase}" data-filter-type="${FilterType.DEFAULT}">${FilterType.DEFAULT}</label>
-  </div>
-  <div class="trip-filters__filter">
-    <input id="filter-${FilterType.FUTURE.toLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.FUTURE.toLowerCase}">
-    <label class="trip-filters__filter-label" for="filter-${FilterType.FUTURE.toLowerCase}" data-filter-type="${FilterType.FUTURE}">${FilterType.FUTURE}</label>
-  </div>
-  <div class="trip-filters__filter">
-    <input id="filter-${FilterType.PAST.toLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.PAST.toLowerCase}">
-    <label class="trip-filters__filter-label" for="filter-${FilterType.PAST.toLowerCase}"  data-filter-type="${FilterType.PAST}">${FilterType.PAST}</label>
-  </div>
+
+  ${filterItemsTemplate}
+
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
 };
 
 export default class Filters extends Abstract {
-  constructor() {
+  constructor(filters, currentFilterType) {
     super();
-    this._currentFilterType = FilterType.DEFAULT;
+    this._filters = filters;
+    this._currentFilterType = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFiltersTemplate();
+    return createFilterTemplate(this._filters, this._currentFilterType);
   }
 
   get currentModeFilter() {
@@ -38,6 +41,7 @@ export default class Filters extends Abstract {
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
+    document.querySelector(`.trip-main__event-add-btn`).removeAttribute(`disabled`);
   }
 
   setFilterTypeChangeHandler(callback) {

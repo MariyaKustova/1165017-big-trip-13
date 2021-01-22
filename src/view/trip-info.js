@@ -1,4 +1,5 @@
 import Abstract from './abstract';
+import {convertObjectDay} from '../utils/point';
 
 const createTripCost = (waypoints) => {
   const result = waypoints.reduce((accumulator, point) => {
@@ -18,12 +19,10 @@ const createRouteName = (waypoints) => {
   return waypoints[0].to + ` - ... - ` + waypoints[waypoints.length - 1].to;
 };
 
-const createDuretionRoute = (waypoints) => {
-  const startMonth = waypoints[0].objectDay.startMonth;
-  const endMonth = waypoints[waypoints.length - 1].objectDay.endMonth;
-  const startDay = waypoints[0].objectDay.startDay;
-  const endDay = waypoints[waypoints.length - 1].objectDay.endDay;
-  return (startMonth === endMonth) ? (startMonth + ` ` + startDay + ` - ` + endDay) : (startMonth + ` ` + startDay + ` - ` + endMonth + ` ` + endDay);
+const createDurationRoute = (waypoints) => {
+  const startDate = convertObjectDay(waypoints[0].startTime, waypoints[0].endTime);
+  const endDate = convertObjectDay(waypoints[waypoints.length - 1].startTime, waypoints[waypoints.length - 1].endTime);
+  return (startDate.startMonth === endDate.endMonth) ? (startDate.startMonth + ` ` + startDate.startDay + ` - ` + endDate.endDay) : (startDate.startMonth + ` ` + startDate.startDay + ` - ` + endDate.endMonth + ` ` + endDate.endDay);
 };
 
 
@@ -31,7 +30,7 @@ const createTripInfoTemplate = (waypoints) => {
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
     <h1 class="trip-info__title">${createRouteName(waypoints)}</h1>
-    <p class="trip-info__dates">${createDuretionRoute(waypoints)}</p>
+    <p class="trip-info__dates">${createDurationRoute(waypoints)}</p>
   </div>
   <p class="trip-info__cost">
   Total: &euro;&nbsp;<span class="trip-info__cost-value">${createTripCost(waypoints)}</span>

@@ -1,6 +1,8 @@
-import {render, RenderPosition, replace, remove} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
+import {UserAction, UpdateType, RenderPosition} from "../utils/const";
+import {isDatesEqual} from "../utils/common";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -14,7 +16,7 @@ export default class Point {
     this._changeMode = changeMode;
 
     this._pointComponent = null;
-    this._isEditeble = null;
+    this._isEditable = null;
     this._formEditComponent = null;
     this._mode = Mode.DEFAULT;
 
@@ -23,6 +25,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormRemoveClick = this._handleFormRemoveClick.bind(this);
     this._handleFormCloseClick = this._handleFormCloseClick.bind(this);
+    this._onEscKeyDownHendler = this._onEscKeyDownHendler.bind(this);
   }
 
   init(waypoint) {
@@ -32,8 +35,8 @@ export default class Point {
     const prevFormEditComponent = this._formEditComponent;
 
     this._pointComponent = new PointView(this._waypoint);
-    this._isEditeble = false;
-    this._formEditComponent = new FormEditView(this._isEditeble, this._waypoint);
+    this._isEditable = false;
+    this._formEditComponent = new FormEditView(this._isEditable, this._waypoint);
 
     this._pointComponent.setClickHandler(this._handleClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -71,20 +74,20 @@ export default class Point {
 
   _replacePointToForm() {
     replace(this._formEditComponent, this._pointComponent);
-    document.addEventListener(`keydown`, this._onEscKeyDown);
+    document.addEventListener(`keydown`, this._onEscKeyDownHendler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     replace(this._pointComponent, this._formEditComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this._onEscKeyDownHendler);
     this._mode = Mode.DEFAULT;
   }
 
-  _onEscKeyDown(evt) {
+  _onEscKeyDownHendler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      evt.preventDefault();
+      this._formEditComponent.reset(this._pointComponent);
       this._replaceFormToPoint();
     }
   }
@@ -95,6 +98,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._waypoint,
@@ -105,13 +110,23 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(waypoint) {
-    this._changeData(waypoint);
+  _handleFormSubmit(update) {
+    const isMinorUpdate = isDatesEqual(this._waypoint.startTime, update.startTime);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
     this._replaceFormToPoint();
   }
 
-  _handleFormRemoveClick() {
-    remove(this._formEditComponent);
+  _handleFormRemoveClick(waypoint) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        waypoint
+    );
+    this._replaceFormToPoint();
   }
 
   _handleFormCloseClick() {

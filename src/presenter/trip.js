@@ -1,53 +1,111 @@
-import {render, remove, RenderPosition} from '../utils/render';
+import {render, remove} from '../utils/render';
 import NoPointsView from '../view/no-points';
 import Sort from '../view/sorting';
 import ListView from '../view/list';
 import PointPresenter from '../presenter/point';
-import {updateItem, sortPointUpDay, sortPointDownDuration, sortPointDownPrice} from '../utils/common';
-import {SortType} from '../utils/const';
+import PointNewPresenter from './point-new';
+import {sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/common';
+import {SortType, UpdateType, UserAction, RenderPosition} from '../utils/const';
+import {filter} from "../utils/filter.js";
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel, filterModel) {
+    this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.SORT_DEFAULT;
 
     this._noPointsComponent = new NoPointsView();
-    this._sort = new Sort();
+    this._sort = null;
     this._listComponent = new ListView();
 
-    this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._pointNewPresenter = new PointNewPresenter(this._listComponent, this._handleViewAction);
   }
 
-  init(waypoints) {
-    this._waypoints = waypoints.slice();
-    this._sourceWaypoints = waypoints.sort(sortPointUpDay);
+  init() {
+    render(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
     this._renderTrip();
   }
 
+  showTrip() {
+    this._tripContainer.classList.remove(`visually-hidden`);
+  }
+
+  hideTrip() {
+    this._tripContainer.classList.add(`visually-hidden`);
+  }
+
+  destroy() {
+    this.clearTrip({resetSortType: true});
+
+    remove(this._listComponent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  createPoint() {
+    this._pointNewPresenter.init();
+  }
+
+  _getPoints() {
+    const filterType = this._filterModel.getFilter();
+    const waypoints = this._pointsModel.getPoints();
+    const filteredPoints = filter[filterType](waypoints);
+
+    switch (this._currentSortType) {
+      case SortType.SORT_DEFAULT:
+        return filteredPoints.sort(sortPointsUpDay);
+      case SortType.SORT_TIME:
+        return filteredPoints.sort(sortPointsDownDuration);
+      case SortType.SORT_PRICE:
+        return filteredPoints.sort(sortPointsDownPrice);
+    }
+
+    return filteredPoints;
+  }
+
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
   }
 
-  _handlePointChange(updatedPoint) {
-    this._waypoints = updateItem(this._waypoints, updatedPoint);
-    this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
   }
 
-  _sortPoint(sortType) {
-    switch (sortType) {
-      case SortType.SORT_TIME:
-        this._waypoints.sort(sortPointDownDuration);
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._pointPresenter[data.id].init(data);
         break;
-      case SortType.SORT_PRICE:
-        this._waypoints.sort(sortPointDownPrice);
+      case UpdateType.MINOR:
+        this.clearTrip();
+        this._renderTrip();
         break;
-      default:
-        this._waypoints = this._sourceWaypoints.slice();
+      case UpdateType.MAJOR:
+        this.clearTrip({resetSortType: true});
+        this._renderTrip();
+        break;
     }
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {
@@ -55,7 +113,7 @@ export default class Trip {
       return;
     }
 
-    this._sortPoint(sortType);
+    this._currentSortType = sortType;
     this.clearTrip();
     this._renderTrip();
   }
@@ -65,8 +123,12 @@ export default class Trip {
   }
 
   _renderSort() {
-    render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
+    if (this._sort !== null) {
+      this._sort = null;
+    }
+    this._sort = new Sort(this._currentSortType);
     this._sort.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
   }
 
   _changeFilter() {
@@ -74,37 +136,39 @@ export default class Trip {
     this._filter.setFilterTypeChangeHandler(this._handleFilterTypeChange);
   }
 
-  _renderList() {
-    render(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
-  }
-
   _renderPoint(waypoint) {
-    const pointPresenter = new PointPresenter(this._listComponent, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._listComponent, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(waypoint);
     this._pointPresenter[waypoint.id] = pointPresenter;
   }
 
-  _renderPoints() {
-    for (const waypoint of this._waypoints) {
+  _renderPoints(waypoints) {
+    waypoints.forEach((waypoint) => {
       this._renderPoint(waypoint);
-    }
+    });
   }
 
   _renderTrip() {
-    if (this._waypoints.length === 0) {
+    const waypoints = this._getPoints();
+    const waypointsCount = waypoints.length;
+    if (waypointsCount === 0) {
       this._renderNoPoints();
+      return;
     }
 
     this._renderSort();
-    this._renderList();
-    this._renderPoints();
+    this._renderPoints(waypoints);
   }
 
-  clearTrip() {
+  clearTrip({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
-    if (this._noPointsComponent) {
-      remove(this._noPointsComponent);
+    remove(this._sort);
+    remove(this._noPointsComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
     }
   }
 }

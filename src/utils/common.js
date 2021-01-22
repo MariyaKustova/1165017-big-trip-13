@@ -22,26 +22,16 @@ export const updateItem = (items, update) => {
   ];
 };
 
-export const sortPointUpDay = (pointA, pointB) => {
+export const sortPointsUpDay = (pointA, pointB) => {
   return pointA.startTime.getTime() - pointB.startTime.getTime();
 };
 
-export const sortPointDownDuration = (pointA, pointB) => {
+export const sortPointsDownDuration = (pointA, pointB) => {
   return pointB.diffDate - pointA.diffDate;
 };
 
-export const sortPointDownPrice = (pointA, pointB) => {
-  return pointA.price - pointB.price;
-};
-
-export const filterPointFutureDate = (pointA) => {
-  const now = new Date();
-  return pointA.startTime.getTime() >= now.getTime();
-};
-
-export const filterPointPastDate = (pointA) => {
-  const now = new Date();
-  return pointA.startTime.getTime() < now.getTime();
+export const sortPointsDownPrice = (pointA, pointB) => {
+  return pointB.price - pointA.price;
 };
 
 export const generateDescription = (to) => {
@@ -50,4 +40,8 @@ export const generateDescription = (to) => {
 
 export const generatePhotos = (to) => {
   return photosMap.get(to);
+};
+
+export const isDatesEqual = (dateA, dateB) => {
+  return (dateA.getTime() === dateB.getTime()) ? true : false;
 };

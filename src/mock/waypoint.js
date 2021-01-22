@@ -1,5 +1,4 @@
 import {getRandomInteger, generateDescription} from '../utils/common';
-import {ConvertTime} from '../utils/const';
 import {generateOptions} from '../view/form/available-offers';
 
 const COUNT = 5;
@@ -48,7 +47,7 @@ export const generateRundomPhotos = () => {
   return photos;
 };
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 // Описывает точку маршрута
 
@@ -68,52 +67,5 @@ export const generateWaypoint = () => {
     options: generateOptions(type).map((item, index) => {
       return Object.assign({id: index + 1}, item);
     }),
-
-    get start() {
-      return this.startTime.getHours() + `:` + this.startTime.getMinutes();
-    },
-
-    get end() {
-      return this.endTime.getHours() + `:` + this.endTime.getMinutes();
-    },
-
-    get day() {
-      const optionsDate = {month: `short`, day: `numeric`};
-      return this.startTime.toLocaleString(`en-US`, optionsDate);
-    },
-
-    get objectDay() {
-      const optionsMonth = {month: `short`};
-      const optionsDay = {day: `numeric`};
-      return {
-        startDay: this.startTime.toLocaleString(`en-US`, optionsDay),
-        startMonth: this.startTime.toLocaleString(`en-US`, optionsMonth),
-        endDay: this.endTime.toLocaleString(`en-US`, optionsDay),
-        endMonth: this.endTime.toLocaleString(`en-US`, optionsMonth),
-        startDate: this.startTime.getDay() + `/` + (this.startTime.getMonth() + 1) + `/` + this.startTime.getFullYear() + ` ` + this.start,
-        endDate: this.endTime.getDay() + `/` + (this.endTime.getMonth() + 1) + `/` + this.endTime.getFullYear() + ` ` + this.end,
-      };
-    },
-
-    get diffDate() {
-      return ((this.endTime.getTime() - this.startTime.getTime()));
-    },
-
-    get durationPoint() {
-      let minutes = Math.floor((this.diffDate / ConvertTime.MIL_IN_MINUTE) % 60);
-      let hours = Math.floor((this.diffDate / ConvertTime.MIL_IN_HOUR) % 24);
-      let days = Math.floor(this.diffDate / ConvertTime.MIL_IN_DAY);
-
-      days = (days < ConvertTime.BORDERLINE_VALUE) ? `0` + days : days;
-      hours = (hours < ConvertTime.BORDERLINE_VALUE) ? `0` + hours : hours;
-      minutes = (minutes < ConvertTime.BORDERLINE_VALUE) ? `0` + minutes : minutes;
-
-      if (days > 0) {
-        return days + `D` + ` ` + hours + `H` + ` ` + minutes + `M`;
-      } else if (hours > 0) {
-        return hours + `H` + ` ` + minutes + `M`;
-      }
-      return minutes + `M`;
-    }
   };
 };
