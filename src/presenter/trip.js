@@ -35,6 +35,14 @@ export default class Trip {
     this._renderTrip();
   }
 
+  showTrip() {
+    this._tripContainer.classList.remove(`visually-hidden`);
+  }
+
+  hideTrip() {
+    this._tripContainer.classList.add(`visually-hidden`);
+  }
+
   destroy() {
     this.clearTrip({resetSortType: true});
 
@@ -44,8 +52,8 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  createPoint(callback) {
-    this._pointNewPresenter.init(callback);
+  createPoint() {
+    this._pointNewPresenter.init();
   }
 
   _getPoints() {

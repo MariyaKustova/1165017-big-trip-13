@@ -1,15 +1,15 @@
 import TripInfoView from './view/trip-info';
 import MenuView from './view/menu';
-import StatisticsView from "./view/statistics.js";
+import StatisticsView from './view/statistics';
 import {generateWaypoint} from './mock/waypoint';
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
 import {RenderPosition, MenuItem, UpdateType, FilterType} from './utils/const';
-import {render} from './utils/render';
+import {render, remove} from './utils/render';
 
-const POINT_COUNT = 20;
+const POINT_COUNT = 10;
 
 export const waypoints = new Array(POINT_COUNT).fill().map(generateWaypoint);
 
@@ -34,20 +34,32 @@ const filterPresenter = new FilterPresenter(tripControls, filterModel, pointsMod
 const tripEvents = siteBodyElement.querySelector(`.trip-events`);
 const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel);
 
-const handlePointNewFormClose = () => {
-  siteMenuComponent.getElement().querySelector(`[data-menu-item=${MenuItem.TABLE}]`).classList.add(`trip-tabs__btn--active`);
-  siteMenuComponent.setMenuItem(MenuItem.TABLE);
-};
+let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      if (statisticsComponent) {
+        remove(statisticsComponent);
+        tripPresenter.destroy();
+        filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
+        tripPresenter.showTrip();
+        tripPresenter.init();
+      }
+      filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
+      siteMenuComponent.setMenuItem(MenuItem.TABLE);
+      tripPresenter.createPoint();
+      break;
     case MenuItem.TABLE:
+      tripPresenter.showTrip();
       tripPresenter.init();
-      // Скрыть статистику
+      remove(statisticsComponent);
       break;
     case MenuItem.STATS:
+      tripPresenter.hideTrip();
       tripPresenter.destroy();
-      // Показать статистику
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
+      render(document.querySelector(`.page-main`), statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
@@ -56,15 +68,10 @@ siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 renderHeader(tripMain);
 filterPresenter.init();
-// tripPresenter.init();
-render(document.querySelector(`.page-body__container`), new StatisticsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
+tripPresenter.init();
 
 tripMain.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
-  tripPresenter.destroy();
-  filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
-  tripPresenter.init();
-  tripPresenter.createPoint(handlePointNewFormClose);
-  siteMenuComponent.getElement().querySelector(`[data-menu-item=${MenuItem.TABLE}]`).classList.remove(`trip-tabs__btn--active`);
+  handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
   evt.target.setAttribute(`disabled`, `disabled`);
 });

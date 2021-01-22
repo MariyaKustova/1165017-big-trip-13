@@ -16,7 +16,7 @@ export default class Point {
     this._changeMode = changeMode;
 
     this._pointComponent = null;
-    this._isEditeble = null;
+    this._isEditable = null;
     this._formEditComponent = null;
     this._mode = Mode.DEFAULT;
 
@@ -35,8 +35,8 @@ export default class Point {
     const prevFormEditComponent = this._formEditComponent;
 
     this._pointComponent = new PointView(this._waypoint);
-    this._isEditeble = false;
-    this._formEditComponent = new FormEditView(this._isEditeble, this._waypoint);
+    this._isEditable = false;
+    this._formEditComponent = new FormEditView(this._isEditable, this._waypoint);
 
     this._pointComponent.setClickHandler(this._handleClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

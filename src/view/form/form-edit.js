@@ -2,6 +2,7 @@ import {renderTypeInputs} from './type-group';
 import {renderOfferCheckboxes, generateOptions} from './available-offers';
 import {renderSectionDestination} from './section-destination';
 import {updateItem, generateDescription, generatePhotos} from '../../utils/common';
+import {convertObjectDay} from '../../utils/point';
 import Smart from '../smart';
 import flatpickr from "flatpickr";
 import he from "he";
@@ -16,19 +17,6 @@ const BLANK_POINT = {
   photos: generatePhotos(`Geneva`),
   startTime: new Date(),
   endTime: ``,
-
-  get objectDay() {
-    const optionsMonth = {month: `short`};
-    const optionsDay = {day: `numeric`};
-    return {
-      startDay: this.startTime.toLocaleString(`en-US`, optionsDay),
-      startMonth: this.startTime.toLocaleString(`en-US`, optionsMonth),
-      endDay: this.endTime.toLocaleString(`en-US`, optionsDay),
-      endMonth: this.endTime.toLocaleString(`en-US`, optionsMonth),
-      startDate: this.startTime.getDay() + `/` + (this.startTime.getMonth() + 1) + `/` + this.startTime.getFullYear() + ` ` + this.start,
-      endDate: this.endTime ? this.endTime.getDay() + `/` + (this.endTime.getMonth() + 1) + `/` + this.endTime.getFullYear() + ` ` + this.end : ``,
-    };
-  },
 };
 
 const destinations = [
@@ -50,8 +38,8 @@ const renderDestinationList = () => {
 };
 
 
-const createFormTemplate = (isEditeble, waypoint) => {
-  const {type, to, price, options, description, photos, objectDay} = waypoint;
+const createFormTemplate = (isEditable, waypoint) => {
+  const {type, to, price, options, description, photos, startTime, endTime} = waypoint;
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -82,10 +70,10 @@ const createFormTemplate = (isEditeble, waypoint) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${objectDay.startDate}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${convertObjectDay(startTime, endTime).startDate}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${objectDay.endDate}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${convertObjectDay(startTime, endTime).endDate}">
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -97,8 +85,8 @@ const createFormTemplate = (isEditeble, waypoint) => {
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">${isEditeble ? `Cancel` : `Delete`}</button>
-    ${isEditeble ? `` : `<button class="event__rollup-btn" type="button">
+    <button class="event__reset-btn" type="reset">${isEditable ? `Cancel` : `Delete`}</button>
+    ${isEditable ? `` : `<button class="event__rollup-btn" type="button">
     <span class="visually-hidden">Open event</span>
   </button>`}
   </header>
@@ -111,16 +99,16 @@ const createFormTemplate = (isEditeble, waypoint) => {
       </div>
     </section>
 
-    ${renderSectionDestination(isEditeble, description, photos)}
+    ${renderSectionDestination(isEditable, description, photos)}
   </section>
 </form>
 </li>`;
 };
 
 export default class FormEditView extends Smart {
-  constructor(isEditeble, waypoint = BLANK_POINT) {
+  constructor(isEditable, waypoint = BLANK_POINT) {
     super();
-    this._isEditeble = isEditeble;
+    this._isEditable = isEditable;
     this._data = FormEditView.parseWaypointToData(waypoint);
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -162,7 +150,7 @@ export default class FormEditView extends Smart {
   }
 
   getTemplate() {
-    return createFormTemplate(this._isEditeble, this._data);
+    return createFormTemplate(this._isEditable, this._data);
   }
 
   updateData(update, justDataUpdating) {

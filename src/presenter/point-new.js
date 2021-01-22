@@ -7,26 +7,23 @@ export default class PointNew {
   constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
-    this._isEditeble = null;
+    this._isEditable = null;
 
     this._formEditComponent = null;
-    this._destroyCallback = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormRemoveClick = this._handleFormRemoveClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(callback) {
-    this._destroyCallback = callback;
-
+  init() {
     if (this._formEditComponent !== null) {
       return;
     }
 
-    this._isEditeble = true;
+    this._isEditable = true;
 
-    this._formEditComponent = new FormEditView(this._isEditeble);
+    this._formEditComponent = new FormEditView(this._isEditable);
     this._formEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._formEditComponent.setFormRemoveClickHandler(this._handleFormRemoveClick);
 
@@ -38,10 +35,6 @@ export default class PointNew {
   destroy() {
     if (this._formEditComponent === null) {
       return;
-    }
-
-    if (this._destroyCallback !== null) {
-      this._destroyCallback();
     }
 
     remove(this._formEditComponent);

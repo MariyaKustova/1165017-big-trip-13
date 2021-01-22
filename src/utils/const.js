@@ -62,3 +62,4 @@ export const photosMap = new Map([
   [`Argentina`, generateRundomPhotos()],
   [`Geneva`, generateRundomPhotos()],
 ]);
+
