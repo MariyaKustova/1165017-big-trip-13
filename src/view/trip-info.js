@@ -10,13 +10,13 @@ const createTripCost = (waypoints) => {
 
 const createRouteName = (waypoints) => {
   if (waypoints.length === 1) {
-    return waypoints[0].to;
+    return waypoints[0].description.name;
   } else if (waypoints.length === 2) {
-    return waypoints[0].to + ` - ` + waypoints[1].to;
+    return waypoints[0].description.name + ` - ` + waypoints[1].description.name;
   } else if (waypoints.length === 3) {
-    return waypoints[0].to + ` - ` + waypoints[1].to + ` - ` + waypoints[2].to;
+    return waypoints[0].description.name + ` - ` + waypoints[1].description.name + ` - ` + waypoints[2].description.name;
   }
-  return waypoints[0].to + ` - ... - ` + waypoints[waypoints.length - 1].to;
+  return waypoints[0].description.name + ` - ... - ` + waypoints[waypoints.length - 1].description.name;
 };
 
 const createDurationRoute = (waypoints) => {

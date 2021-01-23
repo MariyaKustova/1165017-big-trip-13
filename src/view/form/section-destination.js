@@ -1,6 +1,6 @@
-const renderDescription = (element) => {
-  if (element) {
-    return `<p class="event__destination-description">${element}</p>`;
+const renderDescription = ({description}) => {
+  if (description) {
+    return `<p class="event__destination-description">${description}</p>`;
   }
   return ``;
 };
@@ -13,26 +13,24 @@ const renderContainerPhotosTemplate = (photos) => {
 </div>`;
 };
 
-const createPhotos = (isEditable, array) => {
-  if (isEditable) {
-    return ``;
-  } else if (array) {
+const renderPhotos = (pictures) => {
+  if (pictures) {
     let photos = [];
-    for (const photo of array) {
-      photos.push(`<img class="event__photo" src="${photo}" alt="Event photo">`);
+    for (const photo of pictures) {
+      photos.push(`<img class="event__photo" src="${photo.src}" alt="${photo.description}">`);
     }
     return renderContainerPhotosTemplate(photos);
   }
   return ``;
 };
 
-export const renderSectionDestination = (isEditable, description, photos) => {
-  if (description || photos) {
+export const renderSectionDestination = (description) => {
+  if (description) {
     return `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     ${renderDescription(description)}
 
-    ${createPhotos(isEditable, photos)}
+    ${renderPhotos(description.pictures)}
   </section>`;
   }
   return ``;

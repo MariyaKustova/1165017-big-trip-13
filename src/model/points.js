@@ -1,3 +1,4 @@
+import {UpdateType} from '../utils/const';
 import Observer from '../utils/observer';
 
 export default class Points extends Observer {
@@ -6,8 +7,10 @@ export default class Points extends Observer {
     this._points = [];
   }
 
-  setPoints(waypoints) {
+  setPoints(updateType, waypoints) {
     this._points = waypoints.slice();
+
+    this._notify(UpdateType);
   }
 
   getPoints() {
@@ -52,5 +55,53 @@ export default class Points extends Observer {
     ];
 
     this._notify(updateType);
+  }
+
+  static adaptToClient(point) {
+    const adaptedPoint = Object.assign(
+        {},
+        point,
+        {
+          price: point.base_price,
+          startTime: point.date_from,
+          endTime: point.date_to,
+          options: point.offers,
+          description: point.destination,
+          isFavorite: point.is_favorite,
+        }
+    );
+
+    delete adaptedPoint.base_price;
+    delete adaptedPoint.date_from;
+    delete adaptedPoint.date_to;
+    delete adaptedPoint.destination;
+    delete adaptedPoint.offers;
+    delete adaptedPoint.is_favorite;
+
+    return adaptedPoint;
+  }
+
+  static adaptToServer(point) {
+    const adaptedPoint = Object.assign(
+        {},
+        point,
+        {
+          'base_price': point.price,
+          'date_from': point.startTime,
+          'date_to': point.endTime,
+          'offers': point.options,
+          'destination': point.description,
+          'is_favorite': point.isFavorite,
+        }
+    );
+
+    delete adaptedPoint.price;
+    delete adaptedPoint.startTime;
+    delete adaptedPoint.endTime;
+    delete adaptedPoint.description;
+    delete adaptedPoint.options;
+    delete adaptedPoint.isFavorite;
+
+    return adaptedPoint;
   }
 }

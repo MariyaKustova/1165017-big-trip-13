@@ -1,6 +1,6 @@
 import Abstract from '../abstract';
 import dayjs from 'dayjs';
-import {convertDurationPoint} from '../../utils/point';
+import {convertDurationPoint, calculateDiffDate} from '../../utils/point';
 
 const renderListItemOffer = ({title, price}) => {
   return `<li class="event__offer">
@@ -19,7 +19,7 @@ const generateOffers = (options) => {
 };
 
 const createPointTemplate = (waypoint) => {
-  const {type, to, price, startTime, endTime, duration, options, isFavorite} = waypoint;
+  const {type, to, price, startTime, endTime, options, isFavorite} = waypoint;
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${dayjs(startTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(startTime).format(`DD MMM`)}</time>
@@ -33,7 +33,7 @@ const createPointTemplate = (waypoint) => {
         &mdash;
         <time class="event__end-time" datetime="${dayjs(endTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(endTime).format(`HH:mm`)}</time>
       </p>
-      <p class="event__duration">${convertDurationPoint(duration)}</p>
+      <p class="event__duration">${convertDurationPoint(calculateDiffDate(startTime, endTime))}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>

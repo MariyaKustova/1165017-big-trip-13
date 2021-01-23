@@ -1,7 +1,6 @@
 import {renderTypeInputs} from './type-group';
-import {renderOfferCheckboxes, generateOptions} from './available-offers';
 import {renderSectionDestination} from './section-destination';
-import {updateItem, generateDescription, generatePhotos} from '../../utils/common';
+import {updateItem} from '../../utils/common';
 import Smart from '../smart';
 import dayjs from 'dayjs';
 import flatpickr from "flatpickr";
@@ -9,14 +8,49 @@ import he from "he";
 import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
-  type: `Flight`,
-  to: `Geneva`,
+  type: `taxi`,
   price: ``,
-  options: generateOptions(`Flight`),
-  description: generateDescription(`Geneva`),
-  photos: generatePhotos(`Geneva`),
-  startTime: new Date(),
+  startTime: dayjs(),
   endTime: ``,
+  description: {
+    description: `Chamonix, is a beautiful city, a true asian pearl, with crowded streets.`,
+    name: `Chamonix`,
+    pictures: [
+      {
+        src: `http://picsum.photos/300/200?r=0.0762563005163317`,
+        description: `Chamonix parliament building`
+      }
+    ]
+  },
+  options: {
+    type: `taxi`,
+    offers: [
+      {
+        title: `Upgrade to a business class`,
+        price: 120
+      }, {
+        title: `Choose the radio station`,
+        price: 60
+      }
+    ]
+  },
+};
+
+const renderOfferCheckboxes = (options) => {
+  if (options.offers) {
+    const offers = options.offers.map(({type, title, price}, index) => {
+      return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" data-type-offer = ${type} type="checkbox" name="event-offer-${type}" checked}>
+      <label class="event__offer-label" for="event-offer-${type}-${index}">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`;
+    });
+    return offers;
+  }
+  return ``;
 };
 
 const destinations = [
@@ -37,9 +71,18 @@ const renderDestinationList = () => {
   return result;
 };
 
+const defineName = (isEditable, isDeleting) => {
+  if (isEditable) {
+    return `Cancel`;
+  } else if
+  (isDeleting) {
+    return `Deleting...`;
+  }
+  return `Delete`;
+};
 
-const createFormTemplate = (isEditable, waypoint) => {
-  const {type, to, price, options, description, photos, startTime, endTime} = waypoint;
+const createFormTemplate = (isEditable, data) => {
+  const {type, price, options, description, startTime, endTime, isDisabled, isSaving, isDeleting} = data;
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -48,7 +91,7 @@ const createFormTemplate = (isEditable, waypoint) => {
         <span class="visually-hidden">Choose event type</span>
         <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </label>
-      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -62,7 +105,7 @@ const createFormTemplate = (isEditable, waypoint) => {
       <label class="event__label  event__type-output" for="event-destination-1">
       ${type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(to)}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(description.name)}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
       <datalist id="destination-list-1">
         ${renderDestinationList()};
       </datalist>
@@ -70,10 +113,10 @@ const createFormTemplate = (isEditable, waypoint) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startTime, `DD/MM/YY HH:mm`)}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startTime, `DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endTime, `DD/MM/YY HH:mm`)}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endTime, `DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -84,8 +127,8 @@ const createFormTemplate = (isEditable, waypoint) => {
       <input class="event__input  event__input--price" id="event-price-1" name="event-price" value="${price}">
     </div>
 
-    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">${isEditable ? `Cancel` : `Delete`}</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? `saving...` : `save`}</button>
+    <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${defineName(isEditable, isDeleting)}</button>
     ${isEditable ? `` : `<button class="event__rollup-btn" type="button">
     <span class="visually-hidden">Open event</span>
   </button>`}
@@ -99,17 +142,19 @@ const createFormTemplate = (isEditable, waypoint) => {
       </div>
     </section>
 
-    ${renderSectionDestination(isEditable, description, photos)}
+    ${renderSectionDestination(description)}
   </section>
 </form>
 </li>`;
 };
 
 export default class FormEditView extends Smart {
-  constructor(isEditable, waypoint = BLANK_POINT) {
+  constructor(isEditable, waypoint = BLANK_POINT, destinationsModel, offersModel) {
     super();
     this._isEditable = isEditable;
     this._data = FormEditView.parseWaypointToData(waypoint);
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._startDatepicker = null;
     this._endDatepicker = null;
     this._backupData = Object.assign({}, this._data);
@@ -278,21 +323,18 @@ export default class FormEditView extends Smart {
     const type = evt.target.dataset.typeInput;
     this.updateData({
       type,
-      options: generateOptions(type).map((item, index) => {
-        return Object.assign({id: index + 1}, item);
-      })
+      options: this._offers.find((offer) => type === offer.type)
     });
   }
 
   _destinationInputHandler(evt) {
     evt.preventDefault();
-    const to = evt.target.value;
+    const name = evt.target.value;
     this.updateData({
-      to,
+      name,
     }, true);
     this.updateData({
-      description: generateDescription(to),
-      photos: generatePhotos(to),
+      description: this._destinations.find((destination) => name === destination.name)
     });
   }
 
