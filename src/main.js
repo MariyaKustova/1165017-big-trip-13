@@ -8,10 +8,18 @@ import PointsModel from './model/points';
 import FilterModel from './model/filter';
 import {RenderPosition, MenuItem, UpdateType, FilterType} from './utils/const';
 import {render, remove} from './utils/render';
+import Api from './api';
 
 const POINT_COUNT = 10;
+const AUTHORIZATION = `Basic jhf984vnp983wv094`;
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 export const waypoints = new Array(POINT_COUNT).fill().map(generateWaypoint);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+});
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(waypoints);
