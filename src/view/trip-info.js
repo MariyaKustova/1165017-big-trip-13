@@ -1,5 +1,5 @@
 import Abstract from './abstract';
-import {convertObjectDay} from '../utils/point';
+import dayjs from 'dayjs';
 
 const createTripCost = (waypoints) => {
   const result = waypoints.reduce((accumulator, point) => {
@@ -20,9 +20,13 @@ const createRouteName = (waypoints) => {
 };
 
 const createDurationRoute = (waypoints) => {
-  const startDate = convertObjectDay(waypoints[0].startTime, waypoints[0].endTime);
-  const endDate = convertObjectDay(waypoints[waypoints.length - 1].startTime, waypoints[waypoints.length - 1].endTime);
-  return (startDate.startMonth === endDate.endMonth) ? (startDate.startMonth + ` ` + startDate.startDay + ` - ` + endDate.endDay) : (startDate.startMonth + ` ` + startDate.startDay + ` - ` + endDate.endMonth + ` ` + endDate.endDay);
+  const startDate = waypoints[0].startTime;
+  const endDate = (waypoints.length - 1).endTime;
+  const startMonth = dayjs(startDate).format(`MMM`);
+  const endMonth = dayjs(endDate).format(`MMM`);
+  const startDay = dayjs(startDate).format(`DD`);
+  const endDay = dayjs(endDate).format(`DD`);
+  return (startMonth === endMonth) ? (startMonth + ` ` + startDay + ` - ` + endDay) : (startMonth + ` ` + startDay + ` - ` + endMonth + ` ` + endDay);
 };
 
 

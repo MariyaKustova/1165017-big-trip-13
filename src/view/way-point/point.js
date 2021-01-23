@@ -1,5 +1,6 @@
 import Abstract from '../abstract';
-import {convertStartTime, convertEndTime, convertDay, convertDurationPoint} from '../../utils/point';
+import dayjs from 'dayjs';
+import {convertDurationPoint} from '../../utils/point';
 
 const renderListItemOffer = ({title, price}) => {
   return `<li class="event__offer">
@@ -18,21 +19,21 @@ const generateOffers = (options) => {
 };
 
 const createPointTemplate = (waypoint) => {
-  const {type, to, price, startTime, endTime, options, isFavorite} = waypoint;
+  const {type, to, price, startTime, endTime, duration, options, isFavorite} = waypoint;
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${startTime}">${convertDay(startTime)}</time>
+    <time class="event__date" datetime="${dayjs(startTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(startTime).format(`DD MMM`)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${to}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${startTime}">${convertStartTime(startTime)}</time>
+        <time class="event__start-time" datetime="${dayjs(startTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(startTime).format(`HH:mm`)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${endTime}">${convertEndTime(endTime)}</time>
+        <time class="event__end-time" datetime="${dayjs(endTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(endTime).format(`HH:mm`)}</time>
       </p>
-      <p class="event__duration">${convertDurationPoint(startTime, endTime)}</p>
+      <p class="event__duration">${convertDurationPoint(duration)}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>

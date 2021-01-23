@@ -2,8 +2,8 @@ import {renderTypeInputs} from './type-group';
 import {renderOfferCheckboxes, generateOptions} from './available-offers';
 import {renderSectionDestination} from './section-destination';
 import {updateItem, generateDescription, generatePhotos} from '../../utils/common';
-import {convertObjectDay} from '../../utils/point';
 import Smart from '../smart';
+import dayjs from 'dayjs';
 import flatpickr from "flatpickr";
 import he from "he";
 import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -70,10 +70,10 @@ const createFormTemplate = (isEditable, waypoint) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${convertObjectDay(startTime, endTime).startDate}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startTime, `DD/MM/YY HH:mm`)}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${convertObjectDay(startTime, endTime).endDate}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endTime, `DD/MM/YY HH:mm`)}">
     </div>
 
     <div class="event__field-group  event__field-group--price">

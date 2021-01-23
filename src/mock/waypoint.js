@@ -1,4 +1,5 @@
 import {getRandomInteger, generateDescription} from '../utils/common';
+import {calculateDiffDate} from '../utils/point';
 import {generateOptions} from '../view/form/available-offers';
 
 const COUNT = 5;
@@ -52,12 +53,16 @@ export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10)
 // Описывает точку маршрута
 
 export const generateWaypoint = () => {
+  const startTime = `2019-03-18T12:25`;
+  const endTime = `2019-03-20T12:55`;
+  const duration = calculateDiffDate(startTime, endTime);
   const type = generateEvent(typeWaypoints);
   const to = generateEvent(destinations);
   return {
     id: generateId(),
-    startTime: new Date(`2019-03-18T12:25`),
-    endTime: new Date(`2019-03-20T12:55`),
+    startTime,
+    endTime,
+    duration,
     type,
     to,
     price: getRandomInteger(1, 1000),

@@ -1,4 +1,5 @@
 import {destinationsMap, photosMap} from '../utils/const';
+import dayjs from 'dayjs';
 
 
 export const getRandomInteger = (a = 0, b = 1) => {
@@ -23,11 +24,14 @@ export const updateItem = (items, update) => {
 };
 
 export const sortPointsUpDay = (pointA, pointB) => {
-  return pointA.startTime.getTime() - pointB.startTime.getTime();
+  const itemA = pointA.startTime;
+  const itemB = pointB.startTime;
+  console.log(dayjs(itemA), dayjs(itemB))
+  return dayjs(itemA) - dayjs(itemB);
 };
 
 export const sortPointsDownDuration = (pointA, pointB) => {
-  return pointB.diffDate - pointA.diffDate;
+  return pointB.duration - pointA.duration;
 };
 
 export const sortPointsDownPrice = (pointA, pointB) => {
@@ -43,5 +47,5 @@ export const generatePhotos = (to) => {
 };
 
 export const isDatesEqual = (dateA, dateB) => {
-  return (dateA.getTime() === dateB.getTime()) ? true : false;
+  return (dayjs.duration(dateA).asMinutes() === dayjs.duration(dateB).asMinutes()) ? true : false;
 };
