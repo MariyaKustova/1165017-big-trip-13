@@ -371,7 +371,6 @@ export default class FormEditView extends Smart {
   }
 
   _priceChangeHandler(evt) {
-    evt.preventDefault();
     this.updateData({
       price: evt.target.value
     });
