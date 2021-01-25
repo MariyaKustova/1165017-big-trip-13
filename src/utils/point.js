@@ -18,3 +18,8 @@ export const convertDurationPoint = (date) => {
   }
   return minutes + `M`;
 };
+
+export const convertDurationPointInDay = (date) => {
+  let days = Math.ceil(date / ConvertTime.MIL_IN_DAY);
+  return days + `D`;
+};

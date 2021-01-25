@@ -1,6 +1,5 @@
 import {renderTypeInputs} from './type-group';
 import {renderSectionDestination} from './section-destination';
-import {updateItem} from '../../utils/common';
 import Smart from '../smart';
 import dayjs from 'dayjs';
 import flatpickr from "flatpickr";
@@ -45,7 +44,7 @@ const renderOfferCheckboxes = (type, options) => {
         <span class="event__offer-price">${price}</span>
       </label>
     </div>`;
-    });
+    }).join(``);
     return offers;
   }
   return ``;
@@ -57,6 +56,19 @@ const renderDestinationList = (destinations) => {
     result += `<option value="${element.name}"></option>`;
   }
   return result;
+};
+
+const renderOfferSection = (type, options) => {
+  if (options.length > 0) {
+    return `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+    <div class="event__available-offers">
+    ${renderOfferCheckboxes(type, options)}
+    </div>
+  </section>`;
+  }
+  return ``;
 };
 
 const defineNameButton = (isEditable, isDeleting) => {
@@ -122,13 +134,7 @@ const createFormTemplate = (isEditable, data, destinations, offers) => {
   </button>`}
   </header>
   <section class="event__details">
-    <section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-      ${renderOfferCheckboxes(type, options)}
-      </div>
-    </section>
+    ${renderOfferSection(type, options)}
 
     ${renderSectionDestination(description)}
   </section>
@@ -262,9 +268,11 @@ export default class FormEditView extends Smart {
   _setInnerHandlers() {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
-    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`keydown`, this._priceKeydownHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
+    if (this._data.options.length > 0) {
+      this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
+    }
   }
 
 
@@ -333,14 +341,19 @@ export default class FormEditView extends Smart {
 
   _offerChangeHandler(evt) {
     evt.preventDefault();
-    evt.target.checked = false;
+    const offerCheckboxes = this.getElement().querySelectorAll(`input.event__offer-checkbox`);
     let options = [];
-    for (let option of this._data.options) {
-      options = updateItem(this._data.options, option);
-    }
-    this.updateData({
-      options: updateItem(this._data.options, options)
+    const offer = this._offers.find((item) => this._data.type === item.type);
+    const offersOfType = offer.offers;
+    offersOfType.forEach((item, index) => {
+      if (offerCheckboxes[index].checked) {
+        options.push(item);
+      }
     });
+
+    this.updateData({
+      options
+    }, true);
   }
 
   _priceKeydownHandler(evt) {
@@ -359,10 +372,9 @@ export default class FormEditView extends Smart {
 
   _priceChangeHandler(evt) {
     evt.preventDefault();
-    const price = evt.target.value;
     this.updateData({
-      price
-    }, true);
+      price: evt.target.value
+    });
   }
 
   _startDateChangeHandler([userStartDate]) {

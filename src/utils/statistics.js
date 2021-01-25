@@ -1,4 +1,4 @@
-import {calculateDiffDate, convertDurationPoint} from './point';
+import {calculateDiffDate, convertDurationPointInDay} from './point';
 
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -151,9 +151,9 @@ export const renderTypeChart = (typeCtx, waypoints, labels) => {
 
 export const renderTimeSpendChart = (timeSpendCtx, waypoints, labels) => {
   const durationOfVisits = labels.map((label) => {
-    convertDurationPoint(waypoints.reduce((acc, waypoint) => {
-      return waypoint.type === label ? acc + calculateDiffDate(waypoint.startTime, waypoint.endTime) : acc;
-    }, 0));
+    return waypoints.reduce((acc, waypoint) => {
+      return waypoint.type.toUpperCase() === label ? acc + calculateDiffDate(waypoint.startTime, waypoint.endTime) : acc;
+    }, 0);
   });
 
   return new Chart(timeSpendCtx, {
@@ -177,7 +177,7 @@ export const renderTimeSpendChart = (timeSpendCtx, waypoints, labels) => {
           color: `#000000`,
           anchor: `end`,
           align: `start`,
-          formatter: (val) => convertDurationPoint(val),
+          formatter: (val) => convertDurationPointInDay(val),
         },
       },
       title: {

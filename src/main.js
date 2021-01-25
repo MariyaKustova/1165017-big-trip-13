@@ -76,9 +76,9 @@ tripMain.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
 
 Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
 .then(([points, destinations, offers]) => {
-  pointsModel.setPoints(UpdateType.INIT, points);
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
+  pointsModel.setPoints(UpdateType.INIT, points);
   render(tripMain, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
   render(tripMain.children[1].children[0], siteMenuComponent, RenderPosition.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);

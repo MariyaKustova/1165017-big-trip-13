@@ -20,10 +20,10 @@ const createStatisticsTemplate = () => {
 };
 
 export default class Statistics extends SmartView {
-  constructor(waypoynts) {
+  constructor(waypoints) {
     super();
 
-    this._data = waypoynts;
+    this._data = waypoints;
     this._moneyChart = null;
     this._typeChart = null;
     this._timeSpendChart = null;

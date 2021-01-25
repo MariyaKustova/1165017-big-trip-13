@@ -24,7 +24,7 @@ const createRouteName = (waypoints) => {
 
 const createDurationRoute = (waypoints) => {
   const startDate = waypoints[0].startTime;
-  const endDate = (waypoints.length - 1).endTime;
+  const endDate = waypoints[waypoints.length - 1].endTime;
   const startMonth = dayjs(startDate).format(`MMM`);
   const endMonth = dayjs(endDate).format(`MMM`);
   const startDay = dayjs(startDate).format(`DD`);
