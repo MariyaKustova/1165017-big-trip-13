@@ -19,14 +19,14 @@ const generateOffers = (options) => {
 };
 
 const createPointTemplate = (waypoint) => {
-  const {type, to, price, startTime, endTime, options, isFavorite} = waypoint;
+  const {type, price, startTime, endTime, options, description, isFavorite} = waypoint;
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${dayjs(startTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(startTime).format(`DD MMM`)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${to}</h3>
+    <h3 class="event__title">${type} ${description.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${dayjs(startTime, `YYYY-MM-DDTHH:mm`)}">${dayjs(startTime).format(`HH:mm`)}</time>

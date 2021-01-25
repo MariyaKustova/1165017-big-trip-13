@@ -1,4 +1,3 @@
-import {UpdateType} from '../utils/const';
 import Observer from '../utils/observer';
 
 export default class Points extends Observer {
@@ -10,7 +9,7 @@ export default class Points extends Observer {
   setPoints(updateType, waypoints) {
     this._points = waypoints.slice();
 
-    this._notify(UpdateType);
+    this._notify(updateType);
   }
 
   getPoints() {

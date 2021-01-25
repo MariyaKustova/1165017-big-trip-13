@@ -26,15 +26,13 @@ const tripEvents = siteBodyElement.querySelector(`.trip-events`);
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 const filterModel = new FilterModel();
 const siteMenuComponent = new MenuView();
 
 const filterPresenter = new FilterPresenter(tripControls, filterModel, pointsModel);
-const tripPresenter = new TripPresenter(tripEvents, pointsModel, filterModel, api);
-render(tripMain, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);
-
-// const destinationsModel = new DestinationsModel();
-// const offersModel = new OffersModel();
+const tripPresenter = new TripPresenter(tripEvents, pointsModel, destinationsModel, offersModel, filterModel, api);
 
 let statisticsComponent = null;
 
@@ -53,12 +51,13 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.createPoint();
       break;
     case MenuItem.TABLE:
-      // tripPresenter.showTrip();
-      tripPresenter.init();
       remove(statisticsComponent);
+      filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
+      tripPresenter.showTrip();
+      tripPresenter.init();
       break;
     case MenuItem.STATS:
-      // tripPresenter.hideTrip();
+      tripPresenter.hideTrip();
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(document.querySelector(`.page-main`), statisticsComponent, RenderPosition.BEFOREEND);
@@ -75,16 +74,17 @@ tripMain.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
   evt.target.setAttribute(`disabled`, `disabled`);
 });
 
-api.getPoints().
-then((points) => {
-  pointsModel.setTasks(UpdateType.INIT, points);
+Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
+.then(([points, destinations, offers]) => {
+  pointsModel.setPoints(UpdateType.INIT, points);
+  destinationsModel.setDestinations(destinations);
+  offersModel.setOffers(offers);
+  render(tripMain, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
   render(tripMain.children[1].children[0], siteMenuComponent, RenderPosition.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
 })
 .catch(() => {
-  pointsModel.setTasks(UpdateType.INIT, []);
+  pointsModel.setPoints(UpdateType.INIT, []);
   render(tripMain.children[1].children[0], siteMenuComponent, RenderPosition.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
 });

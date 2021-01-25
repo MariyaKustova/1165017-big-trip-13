@@ -34,33 +34,12 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const MenuItem = {
   ADD_NEW_POINT: `ADD_NEW_POINT`,
   TABLE: `TABLE`,
-  STATS: `STATS`,
-  INIT: `INIT`
+  STATS: `STATS`
 };
-
-const typeWaypoints = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Flight`,
-  `Drive`,
-  `Check-in`,
-  `Sightseeing`,
-  `Restaurant`
-];
-
-const destinations = [
-  `Amsterdam`,
-  `Chamonix`,
-  `New York`,
-  `Canada`,
-  `Argentina`
-];

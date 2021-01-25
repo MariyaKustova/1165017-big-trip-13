@@ -17,14 +17,14 @@ export default class PointNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
+  init(waypoint) {
     if (this._formEditComponent !== null) {
       return;
     }
 
     this._isEditable = true;
 
-    this._formEditComponent = new FormEditView(this._isEditable, this._destinationsModel, this._offersModel);
+    this._formEditComponent = new FormEditView(this._isEditable, waypoint, this._destinationsModel, this._offersModel);
     this._formEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._formEditComponent.setFormRemoveClickHandler(this._handleFormRemoveClick);
 

@@ -16,10 +16,12 @@ export const State = {
 };
 
 export default class Point {
-  constructor(listComponent, changeData, changeMode) {
+  constructor(listComponent, changeData, changeMode, destinationsModel, offersModel) {
     this._listComponent = listComponent;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
 
     this._pointComponent = null;
     this._isEditable = null;
@@ -31,7 +33,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormRemoveClick = this._handleFormRemoveClick.bind(this);
     this._handleFormCloseClick = this._handleFormCloseClick.bind(this);
-    this._onEscKeyDownHendler = this._onEscKeyDownHendler.bind(this);
+    this._onEscKeyDownHandler = this._onEscKeyDownHandler.bind(this);
   }
 
   init(waypoint) {
@@ -42,7 +44,7 @@ export default class Point {
 
     this._pointComponent = new PointView(this._waypoint);
     this._isEditable = false;
-    this._formEditComponent = new FormEditView(this._isEditable, this._waypoint);
+    this._formEditComponent = new FormEditView(this._isEditable, this._waypoint, this._destinationsModel, this._offersModel);
 
     this._pointComponent.setClickHandler(this._handleClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -110,18 +112,18 @@ export default class Point {
 
   _replacePointToForm() {
     replace(this._formEditComponent, this._pointComponent);
-    document.addEventListener(`keydown`, this._onEscKeyDownHendler);
+    document.addEventListener(`keydown`, this._onEscKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     replace(this._pointComponent, this._formEditComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDownHendler);
+    document.removeEventListener(`keydown`, this._onEscKeyDownHandler);
     this._mode = Mode.DEFAULT;
   }
 
-  _onEscKeyDownHendler(evt) {
+  _onEscKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._formEditComponent.reset(this._pointComponent);
       this._replaceFormToPoint();
@@ -153,6 +155,7 @@ export default class Point {
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         update
     );
+    this._replaceFormToPoint();
   }
 
   _handleFormRemoveClick(waypoint) {

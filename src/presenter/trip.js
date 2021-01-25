@@ -14,9 +14,9 @@ import {render, remove} from '../utils/render';
 export default class Trip {
   constructor(tripContainer, pointsModel, destinationsModel, offersModel, filterModel, api) {
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
-    this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.SORT_DEFAULT;
@@ -44,13 +44,13 @@ export default class Trip {
     this._renderTrip();
   }
 
-  // showTrip() {
-  //   this._tripContainer.classList.remove(`visually-hidden`);
-  // }
+  showTrip() {
+    this._tripContainer.classList.remove(`visually-hidden`);
+  }
 
-  // hideTrip() {
-  //   this._tripContainer.classList.add(`visually-hidden`);
-  // }
+  hideTrip() {
+    this._tripContainer.classList.add(`visually-hidden`);
+  }
 
   destroy() {
     this.clearTrip({resetSortType: true});
@@ -101,7 +101,7 @@ export default class Trip {
         break;
       case UserAction.ADD_POINT:
         this._pointNewPresenter.setSaving();
-        this._api.updatePoint(update)
+        this._api.addPoint(update)
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
           })
@@ -118,11 +118,6 @@ export default class Trip {
           this._pointPresenter[update.id].setViewState(PointPresenterViewState.ABORTING);
         });
         break;
-      case UpdateType.INIT:
-        this._isLoading = false;
-        remove(this._loadingComponent);
-        this._renderTrip();
-        break;
     }
   }
 
@@ -137,6 +132,11 @@ export default class Trip {
         break;
       case UpdateType.MAJOR:
         this.clearTrip({resetSortType: true});
+        this._renderTrip();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderTrip();
         break;
     }
@@ -171,7 +171,7 @@ export default class Trip {
   }
 
   _renderPoint(waypoint) {
-    const pointPresenter = new PointPresenter(this._listComponent, this._handleViewAction, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._listComponent, this._handleViewAction, this._handleModeChange, this._destinationsModel, this._offersModel);
     pointPresenter.init(waypoint);
     this._pointPresenter[waypoint.id] = pointPresenter;
   }
@@ -189,6 +189,12 @@ export default class Trip {
 
   _renderTrip() {
     const waypoints = this._getPoints();
+
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const waypointsCount = waypoints.length;
     if (waypointsCount === 0) {
       this._renderNoPoints();
