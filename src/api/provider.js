@@ -49,9 +49,9 @@ export default class Provider {
     return Promise.resolve(point);
   }
 
-  addTask(point) {
+  addPoint(point) {
     if (isOnline()) {
-      return this._api.addTask(point)
+      return this._api.addPoint(point)
         .then((newPoint) => {
           this._store.setItem(newPoint.id, PointsModel.adaptToServer(newPoint));
           return newPoint;

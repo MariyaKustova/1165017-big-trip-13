@@ -88,7 +88,7 @@ tripMain.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
   evt.target.setAttribute(`disabled`, `disabled`);
 });
 
-Promise.all([apiWithProvider.getPoints(), apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
+Promise.all([apiWithProvider.getPoints(), api.getDestinations(), api.getOffers()])
 .then(([points, destinations, offers]) => {
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
