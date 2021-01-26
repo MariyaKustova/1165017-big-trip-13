@@ -15,6 +15,10 @@ export const updateItem = (items, update) => {
   ];
 };
 
+export const isOnline = () => {
+  return window.navigator.onLine;
+};
+
 export const sortPointsUpDay = (pointA, pointB) => {
   const itemA = pointA.startTime;
   const itemB = pointB.startTime;
