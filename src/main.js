@@ -13,7 +13,7 @@ import FilterModel from './model/filter';
 import {RenderPosition, MenuItem, UpdateType, FilterType} from './utils/const';
 import {render, remove} from './utils/render';
 
-import Api from './api';
+import Api from './api/api';
 
 const AUTHORIZATION = `Basic jhf984vnp983wv094`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
