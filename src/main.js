@@ -88,3 +88,7 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
   render(tripMain.children[1].children[0], siteMenuComponent, RenderPosition.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
