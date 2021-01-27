@@ -1,5 +1,5 @@
 import Abstract from './abstract';
-import {convertObjectDay} from '../utils/point';
+import dayjs from 'dayjs';
 
 const createTripCost = (waypoints) => {
   const result = waypoints.reduce((accumulator, point) => {
@@ -9,20 +9,27 @@ const createTripCost = (waypoints) => {
 };
 
 const createRouteName = (waypoints) => {
+  const firstPointName = waypoints[0].description.name;
+  const secondPointName = waypoints[1].description.name;
+  const lastPointName = waypoints[waypoints.length - 1].description.name;
   if (waypoints.length === 1) {
-    return waypoints[0].to;
+    return firstPointName;
   } else if (waypoints.length === 2) {
-    return waypoints[0].to + ` - ` + waypoints[1].to;
+    return firstPointName + ` - ` + secondPointName;
   } else if (waypoints.length === 3) {
-    return waypoints[0].to + ` - ` + waypoints[1].to + ` - ` + waypoints[2].to;
+    return firstPointName + ` - ` + secondPointName + ` - ` + lastPointName;
   }
-  return waypoints[0].to + ` - ... - ` + waypoints[waypoints.length - 1].to;
+  return firstPointName + ` - ... - ` + lastPointName;
 };
 
 const createDurationRoute = (waypoints) => {
-  const startDate = convertObjectDay(waypoints[0].startTime, waypoints[0].endTime);
-  const endDate = convertObjectDay(waypoints[waypoints.length - 1].startTime, waypoints[waypoints.length - 1].endTime);
-  return (startDate.startMonth === endDate.endMonth) ? (startDate.startMonth + ` ` + startDate.startDay + ` - ` + endDate.endDay) : (startDate.startMonth + ` ` + startDate.startDay + ` - ` + endDate.endMonth + ` ` + endDate.endDay);
+  const startDate = waypoints[0].startTime;
+  const endDate = waypoints[waypoints.length - 1].endTime;
+  const startMonth = dayjs(startDate).format(`MMM`);
+  const endMonth = dayjs(endDate).format(`MMM`);
+  const startDay = dayjs(startDate).format(`DD`);
+  const endDay = dayjs(endDate).format(`DD`);
+  return (startMonth === endMonth) ? (startMonth + ` ` + startDay + ` - ` + endDay) : (startMonth + ` ` + startDay + ` - ` + endMonth + ` ` + endDay);
 };
 
 

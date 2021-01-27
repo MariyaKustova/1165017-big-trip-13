@@ -1,12 +1,5 @@
-import {destinationsMap, photosMap} from '../utils/const';
-
-
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+import dayjs from 'dayjs';
+import {calculateDiffDate} from './point';
 
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
@@ -23,25 +16,21 @@ export const updateItem = (items, update) => {
 };
 
 export const sortPointsUpDay = (pointA, pointB) => {
-  return pointA.startTime.getTime() - pointB.startTime.getTime();
+  const itemA = pointA.startTime;
+  const itemB = pointB.startTime;
+  return dayjs(itemA) - dayjs(itemB);
 };
 
 export const sortPointsDownDuration = (pointA, pointB) => {
-  return pointB.diffDate - pointA.diffDate;
+  const durationPointA = calculateDiffDate(pointA.startTime, pointA.endTime);
+  const durationPointB = calculateDiffDate(pointB.startTime, pointB.endTime);
+  return durationPointB - durationPointA;
 };
 
 export const sortPointsDownPrice = (pointA, pointB) => {
   return pointB.price - pointA.price;
 };
 
-export const generateDescription = (to) => {
-  return destinationsMap.get(to);
-};
-
-export const generatePhotos = (to) => {
-  return photosMap.get(to);
-};
-
 export const isDatesEqual = (dateA, dateB) => {
-  return (dateA.getTime() === dateB.getTime()) ? true : false;
+  return (dayjs(dateA) === dayjs(dateB)) ? true : false;
 };

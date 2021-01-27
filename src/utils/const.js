@@ -1,5 +1,3 @@
-import {descriptions, generateRundomPhotos} from '../mock/waypoint';
-
 export const COUNT = 5;
 
 export const RenderPosition = {
@@ -36,7 +34,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const MenuItem = {
@@ -44,22 +43,3 @@ export const MenuItem = {
   TABLE: `TABLE`,
   STATS: `STATS`
 };
-
-export const destinationsMap = new Map([
-  [`Amsterdam`, descriptions[1]],
-  [`Chamonix`, descriptions[4] + descriptions[7]],
-  [`New York`, descriptions[2] + descriptions[3] + descriptions[5] + descriptions[5]],
-  [`Canada`, descriptions[1] + descriptions[3] + descriptions[4]],
-  [`Argentina`, descriptions[5] + descriptions[3] + descriptions[8]],
-  [`Geneva`, descriptions[6] + descriptions[2] + descriptions[1]],
-]);
-
-export const photosMap = new Map([
-  [`Amsterdam`, generateRundomPhotos()],
-  [`Chamonix`, generateRundomPhotos()],
-  [`New York`, generateRundomPhotos()],
-  [`Canada`, generateRundomPhotos()],
-  [`Argentina`, generateRundomPhotos()],
-  [`Geneva`, generateRundomPhotos()],
-]);
-

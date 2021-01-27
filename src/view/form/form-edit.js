@@ -1,59 +1,102 @@
 import {renderTypeInputs} from './type-group';
-import {renderOfferCheckboxes, generateOptions} from './available-offers';
 import {renderSectionDestination} from './section-destination';
-import {updateItem, generateDescription, generatePhotos} from '../../utils/common';
-import {convertObjectDay} from '../../utils/point';
 import Smart from '../smart';
+import dayjs from 'dayjs';
 import flatpickr from "flatpickr";
 import he from "he";
 import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
-  type: `Flight`,
-  to: `Geneva`,
+  type: `restaurant`,
   price: ``,
-  options: generateOptions(`Flight`),
-  description: generateDescription(`Geneva`),
-  photos: generatePhotos(`Geneva`),
-  startTime: new Date(),
-  endTime: ``,
+  startTime: dayjs().toString(),
+  endTime: dayjs().toString(),
+  description: {
+    description: `Chamonix, is a beautiful city, a true asian pearl, with crowded streets.`,
+    name: `Chamonix`,
+    pictures: [
+      {
+        src: `http://picsum.photos/300/200?r=0.0762563005163317`,
+        description: `Chamonix parliament building`
+      }
+    ]
+  },
+  options: [
+    {
+      title: `Choose live music`,
+      price: 150
+    }, {
+      title: `Choose VIP area`,
+      price: 70
+    }
+  ]
 };
 
-const destinations = [
-  `Amsterdam`,
-  `Geneva`,
-  `Chamonix`,
-  `New York`,
-  `Canada`,
-  `Argentina`,
-  `Geneva`
-];
 
-const renderDestinationList = () => {
+const renderOfferCheckboxes = (type, options) => {
+  if (options.length > 0) {
+    const offers = options.map(({title, price}, index) => {
+      return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" data-type-offer = ${type} type="checkbox" name="event-offer-${type}" checked>
+      <label class="event__offer-label" for="event-offer-${type}-${index}">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`;
+    }).join(``);
+    return offers;
+  }
+  return ``;
+};
+
+const renderDestinationList = (destinations) => {
   let result = ``;
   for (const element of destinations) {
-    result += `<option value="${element}"></option>`;
+    result += `<option value="${element.name}"></option>`;
   }
   return result;
 };
 
+const renderOfferSection = (type, options) => {
+  if (options.length > 0) {
+    return `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-const createFormTemplate = (isEditable, waypoint) => {
-  const {type, to, price, options, description, photos, startTime, endTime} = waypoint;
+    <div class="event__available-offers">
+    ${renderOfferCheckboxes(type, options)}
+    </div>
+  </section>`;
+  }
+  return ``;
+};
+
+const defineNameButton = (isEditable, isDeleting) => {
+  if (isEditable) {
+    return `Cancel`;
+  } else if
+  (isDeleting) {
+    return `Deleting...`;
+  }
+  return `Delete`;
+};
+
+const createFormTemplate = (isEditable, data, destinations, offers) => {
+  const {type, price, options, description, startTime, endTime, isDisabled, isSaving, isDeleting} = data;
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
       </label>
-      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
-          ${renderTypeInputs()}
+          ${renderTypeInputs(offers)}
         </fieldset>
       </div>
     </div>
@@ -62,18 +105,18 @@ const createFormTemplate = (isEditable, waypoint) => {
       <label class="event__label  event__type-output" for="event-destination-1">
       ${type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(to)}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(description.name)}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
       <datalist id="destination-list-1">
-        ${renderDestinationList()};
+        ${renderDestinationList(destinations)};
       </datalist>
     </div>
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${convertObjectDay(startTime, endTime).startDate}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startTime).format(`DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${convertObjectDay(startTime, endTime).endDate}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endTime).format(`DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -84,32 +127,28 @@ const createFormTemplate = (isEditable, waypoint) => {
       <input class="event__input  event__input--price" id="event-price-1" name="event-price" value="${price}">
     </div>
 
-    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">${isEditable ? `Cancel` : `Delete`}</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? `Saving...` : `Save`}</button>
+    <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${defineNameButton(isEditable, isDeleting)}</button>
     ${isEditable ? `` : `<button class="event__rollup-btn" type="button">
     <span class="visually-hidden">Open event</span>
   </button>`}
   </header>
   <section class="event__details">
-    <section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    ${renderOfferSection(type, options)}
 
-      <div class="event__available-offers">
-      ${renderOfferCheckboxes(options)}
-      </div>
-    </section>
-
-    ${renderSectionDestination(isEditable, description, photos)}
+    ${renderSectionDestination(description)}
   </section>
 </form>
 </li>`;
 };
 
 export default class FormEditView extends Smart {
-  constructor(isEditable, waypoint = BLANK_POINT) {
+  constructor(isEditable, waypoint = BLANK_POINT, destinationsModel, offersModel) {
     super();
     this._isEditable = isEditable;
     this._data = FormEditView.parseWaypointToData(waypoint);
+    this._destinations = destinationsModel.getDestinations();
+    this._offers = offersModel.getOffers();
     this._startDatepicker = null;
     this._endDatepicker = null;
     this._backupData = Object.assign({}, this._data);
@@ -118,7 +157,7 @@ export default class FormEditView extends Smart {
     this._formRemoveClickHandler = this._formRemoveClickHandler.bind(this);
     this._formCloseClickHandler = this._formCloseClickHandler.bind(this);
     this._typePointClickHandler = this._typePointClickHandler.bind(this);
-    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
@@ -150,7 +189,7 @@ export default class FormEditView extends Smart {
   }
 
   getTemplate() {
-    return createFormTemplate(this._isEditable, this._data);
+    return createFormTemplate(this._isEditable, this._data, this._destinations, this._offers);
   }
 
   updateData(update, justDataUpdating) {
@@ -203,6 +242,7 @@ export default class FormEditView extends Smart {
         {
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.startTime,
+          minDate: this._data.startTime,
           onChange: this._startDateChangeHandler
         }
     );
@@ -227,10 +267,12 @@ export default class FormEditView extends Smart {
 
   _setInnerHandlers() {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
-    this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
-    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`keydown`, this._priceKeydownHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
+    if (this._data.options.length > 0) {
+      this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
+    }
   }
 
 
@@ -276,39 +318,42 @@ export default class FormEditView extends Smart {
   _typePointClickHandler(evt) {
     evt.preventDefault();
     const type = evt.target.dataset.typeInput;
+    const suitableOffer = this._offers.find((offer) => type === offer.type);
+    const options = suitableOffer.offers;
     this.updateData({
       type,
-      options: generateOptions(type).map((item, index) => {
-        return Object.assign({id: index + 1}, item);
-      })
+      options
     });
   }
 
-  _destinationInputHandler(evt) {
+  _destinationChangeHandler(evt) {
     evt.preventDefault();
-    const to = evt.target.value;
+    const name = evt.target.value;
+    const suitableDestination = this._destinations.find((destination) => name === destination.name);
     this.updateData({
-      to,
-    }, true);
-    this.updateData({
-      description: generateDescription(to),
-      photos: generatePhotos(to),
+      description: {
+        name,
+        description: suitableDestination.description,
+        pictures: suitableDestination.pictures
+      }
     });
   }
 
   _offerChangeHandler(evt) {
     evt.preventDefault();
+    const offerCheckboxes = this.getElement().querySelectorAll(`input.event__offer-checkbox`);
     let options = [];
-    for (let option of this._data.options) {
-      if (option.value === evt.target.dataset.valueOffer) {
-        option.checked = false;
-        options = updateItem(this._data.options, option);
-        break;
+    const offer = this._offers.find((item) => this._data.type === item.type);
+    const offersOfType = offer.offers;
+    offersOfType.forEach((item, index) => {
+      if (offerCheckboxes[index].checked) {
+        options.push(item);
       }
-    }
-    this.updateData({
-      options: updateItem(this._data.options, options)
     });
+
+    this.updateData({
+      options
+    }, true);
   }
 
   _priceKeydownHandler(evt) {
@@ -326,11 +371,9 @@ export default class FormEditView extends Smart {
   }
 
   _priceChangeHandler(evt) {
-    evt.preventDefault();
-    const price = evt.target.value;
     this.updateData({
-      price
-    }, true);
+      price: evt.target.value
+    });
   }
 
   _startDateChangeHandler([userStartDate]) {
