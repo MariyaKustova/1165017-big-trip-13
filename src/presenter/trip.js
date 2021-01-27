@@ -6,7 +6,7 @@ import LoadingView from '../view/loading.js';
 import PointPresenter, {State as PointPresenterViewState} from './point';
 import PointNewPresenter from './point-new';
 
-import {sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/common';
+import {sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/sort';
 import {SortType, UpdateType, UserAction, RenderPosition} from '../utils/const';
 import {filter} from "../utils/filter.js";
 import {render, remove} from '../utils/render';
@@ -42,14 +42,6 @@ export default class Trip {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderTrip();
-  }
-
-  showTrip() {
-    this._tripContainer.classList.remove(`visually-hidden`);
-  }
-
-  hideTrip() {
-    this._tripContainer.classList.add(`visually-hidden`);
   }
 
   destroy() {

@@ -52,7 +52,6 @@ const handleSiteMenuClick = (menuItem) => {
         remove(statisticsComponent);
         tripPresenter.destroy();
         filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
-        tripPresenter.showTrip();
         tripPresenter.init();
       }
       if (!isOnline()) {
@@ -67,11 +66,9 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       remove(statisticsComponent);
       filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
-      tripPresenter.showTrip();
       tripPresenter.init();
       break;
     case MenuItem.STATS:
-      tripPresenter.hideTrip();
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(document.querySelector(`.page-main`), statisticsComponent, RenderPosition.BEFOREEND);

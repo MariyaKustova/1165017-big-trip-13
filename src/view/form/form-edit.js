@@ -239,12 +239,19 @@ export default class FormEditView extends Smart {
 
     this._startDatepicker = flatpickr(
         this.getElement().querySelector(`#event-start-time-1`),
-        {
-          dateFormat: `d/m/y H:i`,
-          defaultDate: this._data.startTime,
-          minDate: this._data.startTime,
-          onChange: this._startDateChangeHandler
-        }
+        Object.assign(
+            {},
+            {
+              dateFormat: `d/m/y H:i`,
+              defaultDate: this._data.startTime,
+              minDate: new Date(),
+              onChange: this._startDateChangeHandler
+            },
+            {
+              enableTime: true,
+              [`time_24hr`]: true,
+            }
+        )
     );
   }
 
@@ -256,12 +263,19 @@ export default class FormEditView extends Smart {
 
     this._endDatepicker = flatpickr(
         this.getElement().querySelector(`#event-end-time-1`),
-        {
-          dateFormat: `d/m/y H:i`,
-          defaultDate: this._data.endTime,
-          minDate: this._data.startTime,
-          onChange: this._endDateChangeHandler
-        }
+        Object.assign(
+            {},
+            {
+              dateFormat: `d/m/y H:i`,
+              defaultDate: this._data.endTime,
+              minDate: this._data.startTime,
+              onChange: this._endDateChangeHandler
+            },
+            {
+              enableTime: true,
+              [`time_24hr`]: true,
+            }
+        )
     );
   }
 
@@ -269,7 +283,7 @@ export default class FormEditView extends Smart {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`keydown`, this._priceKeydownHandler);
-    this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
+    this.getElement().querySelector(`.event__input--price`).addEventListener(`input`, this._priceChangeHandler);
     if (this._data.options.length > 0) {
       this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
     }
@@ -330,6 +344,15 @@ export default class FormEditView extends Smart {
     evt.preventDefault();
     const name = evt.target.value;
     const suitableDestination = this._destinations.find((destination) => name === destination.name);
+
+    if (!suitableDestination) {
+      evt.target.style.outline = `2px solid red`;
+      evt.target.setCustomValidity(`Choose actual destination`);
+      evt.target.reportValidity();
+
+      return;
+    }
+
     this.updateData({
       description: {
         name,
