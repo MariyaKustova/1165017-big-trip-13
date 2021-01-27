@@ -1,9 +1,16 @@
 import Abstract from './abstract';
 import dayjs from 'dayjs';
 
+const totalPriceOffers = ({options}) => {
+  const result = options.reduce((accumulator, offer) => {
+    return accumulator + offer.price;
+  }, 0);
+  return result;
+};
+
 const createTripCost = (waypoints) => {
   const result = waypoints.reduce((accumulator, point) => {
-    return accumulator + point.price;
+    return accumulator + point.price + totalPriceOffers(point);
   }, 0);
   return result;
 };

@@ -1,8 +1,11 @@
-import {render, replace, remove} from '../utils/render';
 import FormEditView from '../view/form/form-edit';
 import PointView from '../view/way-point/point';
-import {UserAction, UpdateType, RenderPosition} from "../utils/const";
-import {isDatesEqual} from "../utils/common";
+
+import {render, replace, remove} from '../utils/render';
+import {UserAction, UpdateType, RenderPosition} from '../utils/const';
+import {isDatesEqual} from '../utils/common';
+import {isOnline} from '../utils/common.js';
+import {toast} from '../utils/toast/toast.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -131,6 +134,10 @@ export default class Point {
   }
 
   _handleClick() {
+    if (!isOnline()) {
+      toast(`You can't edit point offline`);
+      return;
+    }
     this._replacePointToForm();
   }
 
@@ -149,6 +156,10 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
+    if (!isOnline()) {
+      toast(`You can't save point offline`);
+      return;
+    }
     const isMinorUpdate = isDatesEqual(this._waypoint.startTime, update.startTime);
     this._changeData(
         UserAction.UPDATE_POINT,
@@ -159,6 +170,11 @@ export default class Point {
   }
 
   _handleFormRemoveClick(waypoint) {
+    if (!isOnline()) {
+      toast(`You can't delete point offline`);
+      return;
+    }
+
     this._changeData(
         UserAction.DELETE_POINT,
         UpdateType.MINOR,
