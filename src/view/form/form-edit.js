@@ -84,7 +84,7 @@ const defineNameButton = (isEditable, isDeleting) => {
 const createFormTemplate = (isEditable, data, destinations, offers) => {
   const {type, price, options, description, startTime, endTime, isDisabled, isSaving, isDeleting} = data;
   return `<li class="trip-events__item">
-  <form class="event event--edit" action="#" method="post">
+  <form class="event event--edit">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -231,6 +231,14 @@ export default class FormEditView extends Smart {
     this.setFormCloseClickHandler(this._callback.formCloseClick);
   }
 
+  _startDateChangeHandler([userStartDate]) {
+    this.updateData({
+      startTime: userStartDate
+    }, true);
+
+    this._setEndDatepicker();
+  }
+
   _setStartDatepicker() {
     if (this._startDatepicker) {
       this._startDatepicker.destroy();
@@ -253,6 +261,21 @@ export default class FormEditView extends Smart {
             }
         )
     );
+  }
+
+  _endDateChangeHandler([userEndDate]) {
+    const endDateInput = this.getElement().querySelector(`#event-end-time-1`);
+    if (!userEndDate) {
+      endDateInput.style.outline = `2px solid red`;
+      endDateInput.setCustomValidity(`Enter the correct date`);
+      endDateInput.reportValidity();
+
+      return;
+    }
+
+    this.updateData({
+      endTime: userEndDate
+    }, true);
   }
 
   _setEndDatepicker() {
@@ -283,49 +306,9 @@ export default class FormEditView extends Smart {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typePointClickHandler);
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     this.getElement().querySelector(`.event__input--price`).addEventListener(`keydown`, this._priceKeydownHandler);
-    this.getElement().querySelector(`.event__input--price`).addEventListener(`input`, this._priceChangeHandler);
+    this.getElement().querySelector(`.event__input--price`).addEventListener(`change`, this._priceChangeHandler);
     if (this._data.options.length > 0) {
       this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, this._offerChangeHandler);
-    }
-  }
-
-
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._backupData = Object.assign({}, this._data);
-    this._callback.formSubmit(FormEditView.parseDataToWaypoint(this._data));
-    document.querySelector(`.trip-main__event-add-btn`).removeAttribute(`disabled`);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
-  }
-
-  _formRemoveClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.formRemoveClick(FormEditView.parseDataToWaypoint(this._data));
-    document.querySelector(`.trip-main__event-add-btn`).removeAttribute(`disabled`);
-  }
-
-  setFormRemoveClickHandler(callback) {
-    this._callback.formRemoveClick = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formRemoveClickHandler);
-  }
-
-  _formCloseClickHandler(evt) {
-    evt.preventDefault();
-    this.updateData(
-        this._backupData
-    );
-    this._callback.formCloseClick();
-  }
-
-  setFormCloseClickHandler(callback) {
-    this._callback.formCloseClick = callback;
-    const rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
-    if (rollupBtn) {
-      rollupBtn.addEventListener(`click`, this._formCloseClickHandler);
     }
   }
 
@@ -394,22 +377,67 @@ export default class FormEditView extends Smart {
   }
 
   _priceChangeHandler(evt) {
+    if (!evt.target.value) {
+      evt.target.style.outline = `2px solid red`;
+      evt.target.setCustomValidity(`Enter the correct price`);
+      evt.target.reportValidity();
+
+      return;
+    }
+
     this.updateData({
-      price: evt.target.value
+      price: Number(evt.target.value)
     });
   }
 
-  _startDateChangeHandler([userStartDate]) {
-    this.updateData({
-      startTime: userStartDate
-    }, true);
-    this._setEndDatepicker();
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    const startDateInput = this.getElement().querySelector(`#event-start-time-1`);
+    const endDateInput = this.getElement().querySelector(`#event-end-time-1`);
+    const start = dayjs(this._data.startTime);
+    const end = dayjs(this._data.endTime);
+    if (!startDateInput.value) {
+      startDateInput.style.outline = `2px solid red`;
+      return;
+    } else if (start.diff(end) >= 0 || !endDateInput.value) {
+      endDateInput.style.outline = `2px solid red`;
+      return;
+    }
+    this._backupData = Object.assign({}, this._data);
+    this._callback.formSubmit(FormEditView.parseDataToWaypoint(this._data));
+    document.querySelector(`.trip-main__event-add-btn`).removeAttribute(`disabled`);
   }
 
-  _endDateChangeHandler(userEndDate) {
-    this.updateData({
-      endTime: userEndDate
-    }, true);
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _formRemoveClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.formRemoveClick(FormEditView.parseDataToWaypoint(this._data));
+    document.querySelector(`.trip-main__event-add-btn`).removeAttribute(`disabled`);
+  }
+
+  setFormRemoveClickHandler(callback) {
+    this._callback.formRemoveClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formRemoveClickHandler);
+  }
+
+  _formCloseClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData(
+        this._backupData
+    );
+    this._callback.formCloseClick();
+  }
+
+  setFormCloseClickHandler(callback) {
+    this._callback.formCloseClick = callback;
+    const rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
+    if (rollupBtn) {
+      rollupBtn.addEventListener(`click`, this._formCloseClickHandler);
+    }
   }
 
   static parseWaypointToData(waypoint) {

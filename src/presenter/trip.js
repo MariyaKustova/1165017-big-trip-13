@@ -157,11 +157,6 @@ export default class Trip {
     render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
   }
 
-  _changeFilter() {
-    render(this._tripContainer.children[0], this._sort, RenderPosition.AFTEREND);
-    this._filter.setFilterTypeChangeHandler(this._handleFilterTypeChange);
-  }
-
   _renderPoint(waypoint) {
     const pointPresenter = new PointPresenter(this._listComponent, this._handleViewAction, this._handleModeChange, this._destinationsModel, this._offersModel);
     pointPresenter.init(waypoint);
