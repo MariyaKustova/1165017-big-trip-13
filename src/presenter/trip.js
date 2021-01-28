@@ -8,7 +8,7 @@ import PointNewPresenter from './point-new';
 
 import {sortPointsUpDay, sortPointsDownDuration, sortPointsDownPrice} from '../utils/sort';
 import {SortType, UpdateType, UserAction, RenderPosition} from '../utils/const';
-import {filter} from "../utils/filter.js";
+import {filter} from '../utils/filter.js';
 import {render, remove} from '../utils/render';
 
 export default class Trip {

@@ -1,6 +1,7 @@
 import Abstract from '../abstract';
-import dayjs from 'dayjs';
 import {convertDurationPoint, calculateDiffDate} from '../../utils/point';
+
+import dayjs from 'dayjs';
 
 const renderListItemOffer = ({title, price}) => {
   return `<li class="event__offer">

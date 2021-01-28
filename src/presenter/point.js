@@ -3,8 +3,7 @@ import PointView from '../view/way-point/point';
 
 import {render, replace, remove} from '../utils/render';
 import {UserAction, UpdateType, RenderPosition} from '../utils/const';
-import {isDatesEqual} from '../utils/common';
-import {isOnline} from '../utils/common.js';
+import {isDatesEqual, isOnline} from '../utils/common';
 import {toast} from '../utils/toast/toast.js';
 
 const Mode = {

@@ -1,4 +1,4 @@
-import "./toast.css";
+import './toast.css';
 
 const SHOW_TIME = 5000;
 

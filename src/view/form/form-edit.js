@@ -2,8 +2,9 @@ import {renderTypeInputs} from './type-group';
 import {renderSectionDestination} from './section-destination';
 import Smart from '../smart';
 import dayjs from 'dayjs';
-import flatpickr from "flatpickr";
-import he from "he";
+
+import flatpickr from 'flatpickr';
+import he from 'he';
 import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {

@@ -1,4 +1,4 @@
-import Abstract from "../view/abstract";
+import Abstract from '../view/abstract';
 import {RenderPosition} from './const';
 
 export const render = (container, child, place) => {
