@@ -20,6 +20,6 @@ export const convertDurationPoint = (date) => {
 };
 
 export const convertDurationPointInDay = (date) => {
-  let days = Math.ceil(date / ConvertTime.MIL_IN_DAY);
+  const days = Math.ceil(date / ConvertTime.MIL_IN_DAY);
   return days + `D`;
 };
