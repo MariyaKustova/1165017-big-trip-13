@@ -1,8 +1,8 @@
-import TripInfoView from './view/trip-info';
 import MenuView from './view/menu';
 import StatisticsView from './view/statistics';
 
 import TripPresenter from './presenter/trip';
+import TripInfoPresenter from './presenter/trip-info';
 import FilterPresenter from './presenter/filter';
 
 import PointsModel from './model/points';
@@ -40,6 +40,7 @@ const offersModel = new OffersModel();
 const filterModel = new FilterModel();
 const siteMenuComponent = new MenuView();
 
+const tripInfoPresenter = new TripInfoPresenter(tripMain, pointsModel);
 const filterPresenter = new FilterPresenter(tripControls, filterModel, pointsModel);
 const tripPresenter = new TripPresenter(tripEvents, pointsModel, destinationsModel, offersModel, filterModel, apiWithProvider);
 
@@ -50,34 +51,39 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.ADD_NEW_POINT:
       if (statisticsComponent) {
         remove(statisticsComponent);
-        tripPresenter.destroy();
-        filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
-        tripPresenter.init();
       }
+      tripPresenter.destroy();
+      filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
+      tripPresenter.init();
+
       if (!isOnline()) {
         toast(`You can't create new point offline`);
         siteMenuComponent.setMenuItem(MenuItem.TABLE);
         break;
       }
-      filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
+
       siteMenuComponent.setMenuItem(MenuItem.TABLE);
       tripPresenter.createPoint();
       break;
+
     case MenuItem.TABLE:
       remove(statisticsComponent);
       filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
       tripPresenter.init();
       break;
+
     case MenuItem.STATS:
       tripPresenter.destroy();
+      filterPresenter.init(true);
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(document.querySelector(`.page-main`), statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
 
-filterPresenter.init();
+tripInfoPresenter.init();
 tripPresenter.init();
+filterPresenter.init();
 
 tripMain.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
@@ -90,13 +96,13 @@ Promise.all([apiWithProvider.getPoints(), api.getDestinations(), api.getOffers()
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
   pointsModel.setPoints(UpdateType.INIT, points);
-  render(tripMain, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
   render(tripMain.children[1].children[0], siteMenuComponent, RenderPosition.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 })
 .catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
   render(tripMain.children[1].children[0], siteMenuComponent, RenderPosition.AFTEREND);
+  filterPresenter.init();
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
 
