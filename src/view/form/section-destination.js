@@ -15,7 +15,7 @@ const renderContainerPhotosTemplate = (photos) => {
 
 const renderPhotos = (pictures) => {
   if (pictures) {
-    let photos = [];
+    const photos = [];
     for (const photo of pictures) {
       photos.push(`<img class="event__photo" src="${photo.src}" alt="${photo.description}">`);
     }

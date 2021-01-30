@@ -211,7 +211,7 @@ export default class FormEditView extends Smart {
   }
 
   updateElement() {
-    let prevElement = this.getElement();
+    const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
 
@@ -348,7 +348,7 @@ export default class FormEditView extends Smart {
   _offerChangeHandler(evt) {
     evt.preventDefault();
     const offerCheckboxes = this.getElement().querySelectorAll(`input.event__offer-checkbox`);
-    let options = [];
+    const options = [];
     const offer = this._offers.find((item) => this._data.type === item.type);
     const offersOfType = offer.offers;
     offersOfType.forEach((item, index) => {
